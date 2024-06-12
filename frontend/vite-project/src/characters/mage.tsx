@@ -7,6 +7,9 @@ class Mage {
         character.setGravityY(300);
         character.setGravityX(0);
         character.setVelocity(100, 200);
+
+        character.setTintFill(0x00ff00);
+        character.setDisplaySize(64, 96);
     }
 }
 
