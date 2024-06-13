@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import Character from "../characters/character";
-import Controler from "../characters/controler";
+import Controller from "../characters/controller";
 import {randomInt} from "mathjs";
 
 class GameScene extends Phaser.Scene {
@@ -11,7 +11,6 @@ class GameScene extends Phaser.Scene {
     preload() {
         this.load.setBaseURL('https://labs.phaser.io');
         this.load.image('sky', 'assets/skies/space3.png');
-
     }
 
     create() {
@@ -19,11 +18,11 @@ class GameScene extends Phaser.Scene {
 
         sprite.setScale(1.5);
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 5; i++) {
             new Character(this, randomInt(100, 700), randomInt(100, 500), 'warrior');
         }
 
-        new Controler(this, new Character(this, randomInt(100, 700), randomInt(100, 500), 'mage'));
+        new Controller(this, new Character(this, randomInt(100, 700), randomInt(100, 500), 'mage').character);
         
     }
 }
