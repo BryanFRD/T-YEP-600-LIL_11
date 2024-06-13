@@ -25,6 +25,14 @@ class GameScene extends Phaser.Scene {
         new Controller(this, new Character(this, randomInt(100, 700), randomInt(100, 500), 'mage').character);
         
     }
+
+    update(time: number, delta: number) {
+        this.children.each((child) => {
+            if (child.update) {
+                child.update(time, delta);
+            }
+        });
+    }
 }
 
 export default GameScene;

@@ -9,7 +9,6 @@ const PhaserGame = () => {
   useEffect(() => {
     if (gameInstanceRef.current) {
       // L'instance de Phaser.Game existe déjà, on ne fait rien
-      console.log('gameInstanceRef.current', gameInstanceRef.current);
       return;
     }
 

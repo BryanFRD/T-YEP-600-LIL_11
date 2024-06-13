@@ -1,3 +1,4 @@
+import Weapon from "../weapons/weapon";
 import Character from "./character";
 
 class Mage {
@@ -9,25 +10,45 @@ class Mage {
     attack: number = 10;
     defense: number = 10;
     specialAttack: number = 20;
+    weapon: Weapon;
 
 
     constructor(character: Character) {
 
         this.character = character;
 
-        this.character.setCollideWorldBounds(true);
-        this.character.setBounce(0.2);
-        this.character.setGravityY(300);
-        this.character.setGravityX(0);
-        this.character.setVelocity(100, 200);
+        this.weapon = new Weapon(this.character.scene, this.character.x, this.character.y, 'sword');
+        this.weapon.y = this.character.y-1;
 
-        this.character.setTintFill(0x787878);
-        this.character.setDisplaySize(64, 96);
+        if (this.character && this.character.body) {
+            this.character.setCollideWorldBounds(true);
+            this.character.setBounce(0.2);
+            this.character.setGravityY(300);
+            this.character.setGravityX(0);
+            this.character.setVelocity(100, 200);
+
+            this.character.setTintFill(0x787878);
+            this.character.setDisplaySize(64, 96);
+
+            if (this.character.body.velocity.x < 0 ) {
+                this.character.setFlipX(true);
+            }
+            else {
+                this.character.setFlipX(false);
+            }
+        }  
+        else {
+            throw new Error('Invalid character name');
+        }
+    }
+
+    update(time : number, delta : number) {
     }
 
     lightAttack() {
         // light red
         this.character.setTintFill(0xff0000);
+        // duration 0.2s distance 50px
     }
 
     heavyAttack() {

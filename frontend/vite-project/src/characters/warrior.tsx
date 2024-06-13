@@ -1,52 +1,102 @@
 import Character from "./character";
-import {randomInt} from "mathjs";
- 
+import Weapon from "../weapons/weapon";
+
 class Warrior {
-    constructor(character : Character) {
-        console.log(character);
-        character.setVelocity(randomInt(-200, 200), randomInt(-200, 200));
-        character.setFriction(0.99, 0.99);
+
+    character: Character;
+
+    speed: number = 400;
+    health: number = 120;
+    attack: number = 15;
+    defense: number = 12;
+    specialAttack: number = 25;
+    weapon: Weapon;
+
+    constructor(character: Character) {
+
+        this.character = character;
+
+        this.weapon = new Weapon(this.character.scene, this.character.x, this.character.y, 'hand');
+        this.weapon.y = this.character.y - 1;
+
+        if (this.character && this.character.body) {
+            this.character.setCollideWorldBounds(true);
+            this.character.setBounce(0.1);
+            this.character.setGravityY(300);
+            this.character.setGravityX(0);
+            this.character.setVelocity(100, 200);
+
+            this.character.setTintFill(0xffa500);
+            this.character.setDisplaySize(80, 128);
+
+            if (this.character.body.velocity.x < 0) {
+                this.character.setFlipX(true);
+            }
+            else {
+                this.character.setFlipX(false);
+            }
+        }
+        else {
+            throw new Error('Invalid character name');
+        }
+    }
+
+    update(time: number, delta: number) {
+        if (this.character && this.character.body) {
+            this.weapon.x = this.character.x + this.character.body.velocity.x * delta / 1000;
+            this.weapon.y = this.character.y + this.character.body.velocity.y * delta / 1000;
+        }
+        else {
+            throw new Error('Invalid character name');
+        }
     }
 
     lightAttack() {
-        console.log('Warrior light attack');
+        // light red
+        this.character.setTintFill(0xff0000);
+        // duration 0.2s distance 50px
     }
 
     heavyAttack() {
-        console.log('Warrior heavy attack');
+        // dark red
+        this.character.setTintFill(0x8b0000);
     }
 
     grabThrow() {
-        console.log('Warrior grab throw');
+        // light blue
+        this.character.setTintFill(0x0000ff);
     }
 
     special() {
-        console.log('Warrior special');
+        // wellow
+        this.character.setTintFill(0xffff00);
     }
 
     shield() {
-        console.log('Warrior shield');
+        // dark blue
+        this.character.setTintFill(0x00ff00);
     }
 
     dodge() {
-        console.log('Warrior dodge');
+        // light green
+        this.character.setTintFill(0x00ff00);
     }
 
     moveUp() {
-        console.log('Warrior move up');
+        this.character.setVelocityY(-this.speed);
     }
 
     moveDown() {
-        console.log('Warrior move down');
+        this.character.setVelocityY(this.speed);
     }
 
     moveLeft() {
-        console.log('Warrior move left');
+        this.character.setVelocityX(-this.speed);
     }
 
     moveRight() {
-        console.log('Warrior move right');
+        this.character.setVelocityX(this.speed);
     }
 }
 
-export default Warrior
+export default Warrior;
