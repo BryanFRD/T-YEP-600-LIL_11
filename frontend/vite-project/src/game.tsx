@@ -1,44 +1,44 @@
-import React, { useEffect, useRef } from 'react';
-import Phaser from 'phaser';
-import Scene from './scenes/scene';
+import React, { useEffect, useRef } from 'react'
+import Phaser from 'phaser'
+import Scene from './scenes/scene'
 
 const PhaserGame = () => {
-  const gameRef = useRef(null);
-  const gameInstanceRef = useRef<Phaser.Game | null>(null)
+    const gameRef = useRef(null)
+    const gameInstanceRef = useRef<Phaser.Game | null>(null)
 
-  useEffect(() => {
-    if (gameInstanceRef.current) {
-      // L'instance de Phaser.Game existe déjà, on ne fait rien
-      return;
-    }
-
-    const config = {
-      type: Phaser.AUTO,
-      width: window.innerWidth,
-      height: window.innerHeight,
-      scene: Scene(),
-      physics: {
-        default: 'arcade',
-        arcade: {
-          gravity: {
-            y: 50,
-            x: 0
-          },
-          debug: false
+    useEffect(() => {
+        if (gameInstanceRef.current) {
+            // L'instance de Phaser.Game existe déjà, on ne fait rien
+            return
         }
-      }
-    };
 
-    const game = new Phaser.Game(config);
-    gameInstanceRef.current = game;
+        const config = {
+            type: Phaser.AUTO,
+            width: window.innerWidth,
+            height: window.innerHeight,
+            scene: Scene(),
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: {
+                        y: 50,
+                        x: 0,
+                    },
+                    debug: false,
+                },
+            },
+        }
 
-    return () => {
-      game.destroy(true);
-      gameInstanceRef.current = null;
-    };
-  }, []);
+        const game = new Phaser.Game(config)
+        gameInstanceRef.current = game
 
-  return <div ref={gameRef}></div>
-};
+        return () => {
+            game.destroy(true)
+            gameInstanceRef.current = null
+        }
+    }, [])
 
-export default PhaserGame;
+    return <div ref={gameRef}></div>
+}
+
+export default PhaserGame

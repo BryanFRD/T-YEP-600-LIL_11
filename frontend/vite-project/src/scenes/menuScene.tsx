@@ -1,24 +1,24 @@
-import Phaser from "phaser";
+import Phaser from 'phaser'
+import { IScene } from './scene'
 
-class MenuScene extends Phaser.Scene {
+class MenuScene extends Phaser.Scene implements IScene {
     constructor() {
-        super('menu');
+        super('menu')
     }
 
-    preload() {
-    }
+    preload() {}
 
     create() {
-        this.add.text(100, 100, 'Hello Phaser!', { color: '#0f0' });
+        this.add.text(100, 100, 'Hello Phaser!', { color: '#0f0' })
 
-        const rect = this.add.rectangle(100, 200, 100, 100, 0x00ff00);
-        rect.setInteractive();
+        const rect = this.add.rectangle(100, 200, 100, 100, 0x00ff00)
+        rect.setInteractive()
         rect.on('pointerdown', () => {
-            this.scene.start('game');
-        });
+            this.scene.start('game')
+        })
 
-        this.add.circle(200, 200, 50, 0xff0000);
+        this.add.circle(200, 200, 50, 0xff0000)
     }
 }
 
-export default MenuScene;
+export default MenuScene

@@ -1,6 +1,6 @@
-import Weapon from "./weapon";
+import Weapon, { IWeapon } from "./weapon";
 
-class Hand {
+class Hand implements IWeapon {
 
     weapon: Weapon;
 
@@ -16,9 +16,39 @@ class Hand {
         this.weapon.setTintFill(0xffffff);
         this.weapon.setCollideWorldBounds(false);
     }
+    
+    lightAttack(): void {
+        throw new Error("Method not implemented.");
+    }
+    heavyAttack(): void {
+        throw new Error("Method not implemented.");
+    }
+    grabThrow(): void {
+        throw new Error("Method not implemented.");
+    }
+    special(): void {
+        throw new Error("Method not implemented.");
+    }
+    shield(): void {
+        throw new Error("Method not implemented.");
+    }
+    dodge(): void {
+        throw new Error("Method not implemented.");
+    }
+    moveUp(): void {
+        throw new Error("Method not implemented.");
+    }
+    moveDown(): void {
+        throw new Error("Method not implemented.");
+    }
+    moveLeft(): void {
+        throw new Error("Method not implemented.");
+    }
+    moveRight(): void {
+        throw new Error("Method not implemented.");
+    }
 
     update() {
-        this.weapon.setVelocity(0, 0);
     }
 }
 
