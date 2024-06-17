@@ -14,7 +14,7 @@ class Mage implements ICharacter {
     constructor(character: Character) {
         this.character = character
 
-        this.weapon = new Weapon(this.character.scene, this.character.x, this.character.y, 'sword')
+        this.weapon = new Weapon(this.character.scene, this.character.x, this.character.y, 'sword', this.character)
         this.weapon.y = this.character.y - 1
 
         if (this.character && this.character.body) {

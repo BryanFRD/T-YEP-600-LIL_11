@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import Sword from './sword'
 import Hand from './hand'
 import Axe from './axe'
+import Character, { CharacterName } from '../characters/character'
 
 export type WeaponType = {
     sword: Sword
@@ -34,10 +35,13 @@ export interface IWeapon {
 class Weapon extends Phaser.Physics.Arcade.Sprite {
     weapon: WeaponObject
     text: Phaser.GameObjects.Text
+    character: Character | null
 
-    constructor(scene: Phaser.Scene, x: number, y: number, weaponName: WeaponName) {
+    constructor(scene: Phaser.Scene, x: number, y: number, weaponName: WeaponName, character?: Character) {
         super(scene, x, y, weaponName)
         scene.physics.world.enableBody(this)
+
+        this.character = character || null
 
         if (!this.body) {
             throw new Error('Invalid weapon name')
@@ -56,7 +60,26 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         this.text.setOrigin(0.5) // set the origin of the text object to the center
         this.text.setPosition(this.body.center.x, this.body.center.y) // set the position of the text object to the center of the sprite
 
-        this.setFriction(0, 0)
+        this.scene.physics.add.overlap(
+            this,
+            this.scene.children.getAll().filter((child) => child instanceof Weapon && child !== this)
+        )
+
+        this.scene.physics.add.overlap(
+            this,
+            this.scene.children.getAll().filter((child) => child instanceof Character && child !== this.character),
+            (weapon, character) => {
+                const weaponObject = weapon as Weapon
+                const characterObject = character as Character
+
+                characterObject.character.health -= weaponObject.weapon.attack
+                characterObject.setTintFill(0xff0000)
+
+                if (characterObject.character.health <= 0) {
+                    characterObject.deleteCharacter()
+                }
+            }
+        )
     }
 
     update(time: number, delta: number) {
@@ -81,6 +104,15 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
             default:
                 throw new Error('Invalid weapon name')
         }
+    }
+
+    deleteWeapon() {
+        this.destroy()
+        this.text.destroy()
+    }
+
+    setCharacter(character: Character | null) {
+        this.character = character
     }
 }
 

@@ -22,6 +22,8 @@ export interface ICharacter {
     defense: number
     specialAttack: number
 
+    action: string[]
+
     lightAttack(): void
     heavyAttack(): void
     grabThrow(): void
@@ -37,6 +39,7 @@ export interface ICharacter {
 class Character extends Phaser.Physics.Arcade.Sprite {
     character: CharacterObject
     text: Phaser.GameObjects.Text
+    healthBar: Phaser.GameObjects.Graphics
 
     constructor(scene: Phaser.Scene, x: number, y: number, characterName: CharacterName) {
         super(scene, x, y, characterName)
@@ -64,6 +67,16 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         this.text = this.scene.add.text(0, 0, characterName, { color: '#0f0' })
         this.text.setOrigin(0.5) // set the origin of the text object to the center
         this.text.setPosition(this.body.center.x, this.body.center.y) // set the position of the text object to the center of the sprite
+
+        // Create a new graphics object to represent the health bar
+        this.healthBar = this.scene.add.graphics()
+
+        // Set the position of the health bar to the bottom of the sprite character
+        this.healthBar.x = this.x - this.width / 2
+        this.healthBar.y = this.y + this.height / 2
+
+        // Add the health bar as a child of the sprite character
+        this.scene.add.existing(this.healthBar)
     }
 
     update(time: number, delta: number) {
@@ -93,6 +106,17 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         } else {
             throw new Error('Invalid character name')
         }
+
+        // Update the size of the health bar based on the character's current health
+        this.healthBar.clear()
+        this.healthBar.fillStyle(0xff0000, 1)
+        this.healthBar.fillRect(0, 0, this.width, 5)
+        this.healthBar.fillStyle(0x00ff00, 1)
+        this.healthBar.fillRect(0, 0, (this.character.health / 100) * this.width, 5)
+
+        // Update the position of the health bar to ensure it stays at the bottom of the sprite character
+        this.healthBar.x = this.x - this.width / 2
+        this.healthBar.y = this.y + this.height / 2
     }
 
     getCharacter(characterName: CharacterName): CharacterObject {
@@ -104,6 +128,13 @@ class Character extends Phaser.Physics.Arcade.Sprite {
             default:
                 throw new Error('Invalid character name')
         }
+    }
+
+    deleteCharacter() {
+        this.destroy()
+        this.text.destroy()
+        this.healthBar.destroy()
+        this.character.weapon.deleteWeapon()
     }
 }
 
