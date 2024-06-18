@@ -1,8 +1,10 @@
 {
     "scripts": {
         "pre-commit": "cd frontend && npm run pre-commit",
-        "lint-frontend": "cd frontend && npm run lint",
-        "check-types": "cd frontend && npm run check-types"
-
+        "prepare": "husky install"
+    },
+    "devDependencies": {
+        "@commitlint/config-conventional": "^19.2.2",
+        "husky": "^8.0.3"
     }
 }

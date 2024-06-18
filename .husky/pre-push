@@ -1,3 +1,15 @@
 #!/usr/bin/env sh
-. "${0%/*}/h"
-npx turbo run test --filter=*.test.ts
+. "$(dirname -- "$0")/_/husky.sh"
+
+set +e
+
+git diff HEAD --quiet -- .
+
+if [ $? -ne 0 ]; then
+  echo "Please commit the changes before a push."
+  exit 1
+fi
+
+cd frontend/
+# run scripts
+npm run tsc

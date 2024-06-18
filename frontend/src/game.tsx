@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import Scene from './scenes/scene'
 

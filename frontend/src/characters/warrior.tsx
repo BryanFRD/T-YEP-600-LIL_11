@@ -4,6 +4,14 @@ import Character, { ICharacter } from './character'
 class Warrior implements ICharacter {
   character: Character
 
+  action: string[] = [
+    'lightAttack',
+    'heavyAttack',
+    'grabThrow',
+    'special',
+    'shield',
+    'dodge'
+  ]
   speed: number = 400
   health: number = 120
   attack: number = 15
@@ -39,7 +47,7 @@ class Warrior implements ICharacter {
     }
   }
 
-  update(time: number, delta: number) {}
+  update(_time: number, _delta: number) {}
 
   lightAttack() {
     // light red

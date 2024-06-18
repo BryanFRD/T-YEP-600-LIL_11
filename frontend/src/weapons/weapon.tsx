@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 
-import Character, { CharacterName } from '../characters/character'
+import Character from '../characters/character'
 import Axe from './axe'
 import Hand from './hand'
 import Sword from './sword'
@@ -95,7 +95,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
     )
   }
 
-  update(time: number, delta: number) {
+  update(_time: number, delta: number) {
     if (!this.body) {
       throw new Error('Invalid weapon name')
     }

@@ -4,6 +4,14 @@ import Character, { ICharacter } from './character'
 class Mage implements ICharacter {
   character: Character
 
+  action: string[] = [
+    'lightAttack',
+    'heavyAttack',
+    'grabThrow',
+    'special',
+    'shield',
+    'dodge'
+  ]
   speed: number = 500
   health: number = 100
   attack: number = 10
@@ -39,7 +47,7 @@ class Mage implements ICharacter {
     }
   }
 
-  update(time: number, delta: number) {}
+  update() {}
 
   lightAttack() {
     // light red

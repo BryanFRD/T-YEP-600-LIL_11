@@ -2,7 +2,7 @@ import GameScene from './gameScene'
 import MenuScene from './menuScene'
 
 export interface IScene {
-  scene: any
+  scene: unknown
 }
 
 const Scene = () => {
