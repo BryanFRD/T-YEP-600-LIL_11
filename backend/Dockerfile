@@ -2,7 +2,7 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-*COPY package*.json ./
+COPY package*.json ./
 
 RUN npm install
 
@@ -12,7 +12,7 @@ RUN npm run build
 
 FROM node:18-alpine
 
-*WORKDIR /app
+WORKDIR /app
 
 COPY package*.json ./
 
