@@ -1,13 +1,13 @@
-import MenuScene from './menuScene'
 import GameScene from './gameScene'
+import MenuScene from './menuScene'
 
 export interface IScene {
-    scene: any
+  scene: any
 }
 
 const Scene = () => {
-    const scene = [MenuScene, GameScene]
-    return scene
+  const scene = [MenuScene, GameScene]
+  return scene
 }
 
 export default Scene
