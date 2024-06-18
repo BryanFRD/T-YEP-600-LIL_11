@@ -1,86 +1,100 @@
-import Character, { ICharacter } from './character'
 import Weapon from '../weapons/weapon'
+import Character, { ICharacter } from './character'
 
 class Warrior implements ICharacter {
-    character: Character
+  character: Character
 
-    speed: number = 400
-    health: number = 120
-    attack: number = 15
-    defense: number = 12
-    specialAttack: number = 25
-    weapon: Weapon
+  action: string[] = [
+    'lightAttack',
+    'heavyAttack',
+    'grabThrow',
+    'special',
+    'shield',
+    'dodge'
+  ]
+  speed: number = 400
+  health: number = 120
+  attack: number = 15
+  defense: number = 12
+  specialAttack: number = 25
+  weapon: Weapon
 
-    constructor(character: Character) {
-        this.character = character
+  constructor(character: Character) {
+    this.character = character
 
-        this.weapon = new Weapon(this.character.scene, this.character.x, this.character.y, 'hand', this.character)
-        this.weapon.y = this.character.y - 1
+    this.weapon = new Weapon(
+      this.character.scene,
+      this.character.x,
+      this.character.y,
+      'hand',
+      this.character
+    )
+    this.weapon.y = this.character.y - 1
 
-        if (this.character && this.character.body) {
-            this.character.setVelocity(100, 200)
+    if (this.character && this.character.body) {
+      this.character.setVelocity(100, 200)
 
-            this.character.setTintFill(0xffa500)
-            this.character.setDisplaySize(80, 128)
+      this.character.setTintFill(0xffa500)
+      this.character.setDisplaySize(80, 128)
 
-            if (this.character.body.velocity.x < 0) {
-                this.character.setFlipX(true)
-            } else {
-                this.character.setFlipX(false)
-            }
-        } else {
-            throw new Error('Invalid character name')
-        }
+      if (this.character.body.velocity.x < 0) {
+        this.character.setFlipX(true)
+      } else {
+        this.character.setFlipX(false)
+      }
+    } else {
+      throw new Error('Invalid character name')
     }
+  }
 
-    update(time: number, delta: number) {}
+  update(_time: number, _delta: number) {}
 
-    lightAttack() {
-        // light red
-        this.character.setTintFill(0xff0000)
-        // duration 0.2s distance 50px
-    }
+  lightAttack() {
+    // light red
+    this.character.setTintFill(0xff0000)
+    // duration 0.2s distance 50px
+  }
 
-    heavyAttack() {
-        // dark red
-        this.character.setTintFill(0x8b0000)
-    }
+  heavyAttack() {
+    // dark red
+    this.character.setTintFill(0x8b0000)
+  }
 
-    grabThrow() {
-        // light blue
-        this.character.setTintFill(0x0000ff)
-    }
+  grabThrow() {
+    // light blue
+    this.character.setTintFill(0x0000ff)
+  }
 
-    special() {
-        // wellow
-        this.character.setTintFill(0xffff00)
-    }
+  special() {
+    // wellow
+    this.character.setTintFill(0xffff00)
+  }
 
-    shield() {
-        // dark blue
-        this.character.setTintFill(0x00ff00)
-    }
+  shield() {
+    // dark blue
+    this.character.setTintFill(0x00ff00)
+  }
 
-    dodge() {
-        // light green
-        this.character.setTintFill(0x00ff00)
-    }
+  dodge() {
+    // light green
+    this.character.setTintFill(0x00ff00)
+  }
 
-    moveUp() {
-        this.character.setVelocityY(-this.speed)
-    }
+  moveUp() {
+    this.character.setVelocityY(-this.speed)
+  }
 
-    moveDown() {
-        this.character.setVelocityY(this.speed)
-    }
+  moveDown() {
+    this.character.setVelocityY(this.speed)
+  }
 
-    moveLeft() {
-        this.character.setVelocityX(-this.speed)
-    }
+  moveLeft() {
+    this.character.setVelocityX(-this.speed)
+  }
 
-    moveRight() {
-        this.character.setVelocityX(this.speed)
-    }
+  moveRight() {
+    this.character.setVelocityX(this.speed)
+  }
 }
 
 export default Warrior

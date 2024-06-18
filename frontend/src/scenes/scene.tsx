@@ -1,15 +1,13 @@
-import MenuScene from './menuScene'
 import GameScene from './gameScene'
-import ContinueGameScene from './continueGameScene'
-import NewGameScene from './newGameScene'
-import OptionsScene from './optionsScene'
+import MenuScene from './menuScene'
 
 export interface IScene {
+  scene: unknown
 }
 
 const Scene = () => {
-    const scene = [MenuScene, GameScene, ContinueGameScene, NewGameScene, OptionsScene]
-    return scene
+  const scene = [MenuScene, GameScene]
+  return scene
 }
 
 export default Scene
