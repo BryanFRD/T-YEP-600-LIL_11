@@ -1,5 +1,9 @@
 import Phaser from 'phaser'
 import { IScene } from './scene'
+import GameScene from './gameScene'
+import ContinueGameScene from './continueGameScene'
+import SaveGameScene from './saveGameScene'
+import OptionsScene from './optionsScene'
 
 class MenuScene extends Phaser.Scene implements IScene {
     constructor() {
@@ -13,8 +17,49 @@ class MenuScene extends Phaser.Scene implements IScene {
         this.load.image('optionsButton', 'path/to/optionsButton.png')
         this.load.image('quitButton', 'path/to/quitButton.png')
     }
+    preload() {
+        this.load.image('newGameButton', 'path/to/newGameButton.png')
+        this.load.image('continueButton', 'path/to/continueButton.png')
+        this.load.image('saveButton', 'path/to/saveButton.png')
+        this.load.image('optionsButton', 'path/to/optionsButton.png')
+        this.load.image('quitButton', 'path/to/quitButton.png')
+    }
 
     create() {
+        this.add
+            .image(400, 100, 'newGameButton')
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.start('NewGameScene')
+            })
+
+        this.add
+            .image(400, 200, 'continueButton')
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.start('ContinueGameScene')
+            })
+
+        this.add
+            .image(400, 300, 'saveButton')
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.start('SaveGameScene')
+            })
+
+        this.add
+            .image(400, 400, 'optionsButton')
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.start('OptionsScene')
+            })
+
+        this.add
+            .image(400, 500, 'quitButton')
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.quitGame()
+            })
         this.add
             .image(400, 100, 'newGameButton')
             .setInteractive()
@@ -64,4 +109,4 @@ class MenuScene extends Phaser.Scene implements IScene {
     }
 }
 
-export default MenuScene
+export default game;
