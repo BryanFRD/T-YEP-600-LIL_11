@@ -1,22 +1,11 @@
 import Phaser from 'phaser'
 import { IScene } from './scene'
-import GameScene from './gameScene'
-import ContinueGameScene from './continueGameScene'
-import SaveGameScene from './saveGameScene'
-import OptionsScene from './optionsScene'
 
 class MenuScene extends Phaser.Scene implements IScene {
     constructor() {
         super('menu')
     }
 
-    preload() {
-        this.load.image('newGameButton', 'path/to/newGameButton.png')
-        this.load.image('continueButton', 'path/to/continueButton.png')
-        this.load.image('saveButton', 'path/to/saveButton.png')
-        this.load.image('optionsButton', 'path/to/optionsButton.png')
-        this.load.image('quitButton', 'path/to/quitButton.png')
-    }
     preload() {
         this.load.image('newGameButton', 'path/to/newGameButton.png')
         this.load.image('continueButton', 'path/to/continueButton.png')
@@ -109,4 +98,4 @@ class MenuScene extends Phaser.Scene implements IScene {
     }
 }
 
-export default game;
+export default MenuScene;
