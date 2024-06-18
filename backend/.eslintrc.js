@@ -7,16 +7,19 @@ module.exports = {
   extends: [
     'airbnb-typescript/base',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
+    'plugin:prettier/recommended',
   ],
   rules: {
     'no-console': 'off',
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-    'prettier/prettier': 'error'
+    'prettier/prettier': 'error',
   },
   settings: {
     'import/resolver': {
-      typescript: {},
+      node: {
+        extensions: ['.js', '.ts'],
+      },
     },
   },
 };
