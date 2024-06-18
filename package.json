@@ -1,0 +1,8 @@
+{
+    "scripts": {
+        "pre-commit": "cd frontend && npm run pre-commit",
+        "lint-frontend": "cd frontend && npm run lint",
+        "check-types": "cd frontend && npm run check-types"
+
+    }
+}
