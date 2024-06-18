@@ -14,7 +14,7 @@
   "proseWrap": "preserve",
   "htmlWhitespaceSensitivity": "css",
   "vueIndentScriptAndStyle": false,
-  "endOfLine": "auto",
+  "endOfLine": "auto
   "embeddedLanguageFormatting": "auto",
   "printWidth": 80,
   "importOrder": [
