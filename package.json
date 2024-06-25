@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "pre-commit": "cd frontend && npm run pre-commit && cd .. && cd backend && npm run pre-commit",
+        "pre-commit": "npm install && cd frontend && npm run pre-commit && cd .. && cd backend && npm run pre-commit",
         "prepare": "husky install"
     },
     "devDependencies": {
