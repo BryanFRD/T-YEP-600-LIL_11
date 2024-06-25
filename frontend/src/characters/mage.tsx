@@ -2,34 +2,24 @@ import Weapon from '../weapons/weapon'
 import Character, { ICharacter } from './character'
 
 class Mage implements ICharacter {
-  character: Character
+    character: Character
+    weapon: Weapon
 
-  action: string[] = [
-    'lightAttack',
-    'heavyAttack',
-    'grabThrow',
-    'special',
-    'shield',
-    'dodge'
-  ]
-  speed: number = 500
-  health: number = 100
-  attack: number = 10
-  defense: number = 10
-  specialAttack: number = 20
-  weapon: Weapon
+    speed: number = 500
+    health: number = 100
+    attack: number = 10
+    defense: number = 10
+    specialAttack: number = 20
+
+    actions: string[]
 
   constructor(character: Character) {
     this.character = character
 
-    this.weapon = new Weapon(
-      this.character.scene,
-      this.character.x,
-      this.character.y,
-      'sword',
-      this.character
-    )
-    this.weapon.y = this.character.y - 1
+        this.weapon = new Weapon(this.character.scene, this.character.x, this.character.y, 'sword', this.character)
+        this.weapon.y = this.character.y - 1
+
+        this.actions = []
 
     if (this.character && this.character.body) {
       this.character.setVelocity(100, 200)
@@ -49,52 +39,45 @@ class Mage implements ICharacter {
 
   update() {}
 
-  lightAttack() {
-    // light red
-    this.character.setTintFill(0xff0000)
-    // duration 0.2s distance 50px
-  }
+    lightAttack() {
+        this.actions.push('lightAttack')
+    }
 
-  heavyAttack() {
-    // dark red
-    this.character.setTintFill(0x8b0000)
-  }
+    heavyAttack() {
+        this.actions.push('heavyAttack')
+    }
 
-  grabThrow() {
-    // light blue
-    this.character.setTintFill(0x0000ff)
-  }
+    grabThrow() {
+        this.actions.push('grabThrow')
+    }
 
-  special() {
-    // wellow
-    this.character.setTintFill(0xffff00)
-  }
+    special() {
+        this.actions.push('special')
+    }
 
-  shield() {
-    // dark blue
-    this.character.setTintFill(0x00ff00)
-  }
+    shield() {
+        this.actions.push('shield')
+    }
 
-  dodge() {
-    // light green
-    this.character.setTintFill(0x00ff00)
-  }
+    dodge() {
+        this.actions.push('dodge')
+    }
 
-  moveUp() {
-    this.character.setVelocityY(-this.speed)
-  }
+    moveUp() {
+        this.actions.push('moveUp')
+    }
 
-  moveDown() {
-    this.character.setVelocityY(this.speed)
-  }
+    moveDown() {
+        this.actions.push('moveDown')
+    }
 
-  moveLeft() {
-    this.character.setVelocityX(-this.speed)
-  }
+    moveLeft() {
+        this.actions.push('moveLeft')
+    }
 
-  moveRight() {
-    this.character.setVelocityX(this.speed)
-  }
+    moveRight() {
+        this.actions.push('moveRight')
+    }
 }
 
 export default Mage

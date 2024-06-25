@@ -23,7 +23,7 @@ export interface ICharacter {
   defense: number
   specialAttack: number
 
-  action: string[]
+    actions: string[]
 
   lightAttack(): void
   heavyAttack(): void
@@ -125,10 +125,10 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     this.healthBar.fillStyle(0x00ff00, 1)
     this.healthBar.fillRect(0, 0, (this.character.health / 100) * this.width, 5)
 
-    // Update the position of the health bar to ensure it stays at the bottom of the sprite character
-    this.healthBar.x = this.x - this.width / 2
-    this.healthBar.y = this.y + this.height / 2
-  }
+        // Update the position of the health bar to ensure it stays at the bottom of the sprite character
+        this.healthBar.x = this.x - this.width / 2 + (this.body.velocity.x * delta) / 1000
+        this.healthBar.y = this.y + this.height / 2 + (this.body.velocity.y * delta) / 1000
+    }
 
   getCharacter(characterName: CharacterName): CharacterObject {
     switch (characterName) {

@@ -74,26 +74,15 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         .filter(child => child instanceof Weapon && child !== this)
     )
 
-    this.scene.physics.add.overlap(
-      this,
-      this.scene.children
-        .getAll()
-        .filter(
-          child => child instanceof Character && child !== this.character
-        ),
-      (weapon, character) => {
-        const weaponObject = weapon as Weapon
-        const characterObject = character as Character
-
-        characterObject.character.health -= weaponObject.weapon.attack
-        characterObject.setTintFill(0xff0000)
-
-        if (characterObject.character.health <= 0) {
-          characterObject.deleteCharacter()
-        }
-      }
-    )
-  }
+        this.scene.physics.add.overlap(
+            this,
+            this.scene.children.getAll().filter((child) => child instanceof Character && child !== this.character),
+            (weapon, character) => {
+                const weaponObject = weapon as Weapon
+                const characterObject = character as Character
+            }
+        )
+    }
 
   update(_time: number, delta: number) {
     if (!this.body) {

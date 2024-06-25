@@ -2,22 +2,17 @@ import Weapon from '../weapons/weapon'
 import Character, { ICharacter } from './character'
 
 class Warrior implements ICharacter {
-  character: Character
+    character: Character
+    weapon: Weapon
 
-  action: string[] = [
-    'lightAttack',
-    'heavyAttack',
-    'grabThrow',
-    'special',
-    'shield',
-    'dodge'
-  ]
-  speed: number = 400
-  health: number = 120
-  attack: number = 15
-  defense: number = 12
-  specialAttack: number = 25
-  weapon: Weapon
+    actions: string[] = []
+
+    speed: number = 400
+    health: number = 120
+    attack: number = 15
+    defense: number = 12
+    specialAttack: number = 25
+    weapon: Weapon
 
   constructor(character: Character) {
     this.character = character
@@ -49,52 +44,45 @@ class Warrior implements ICharacter {
 
   update(_time: number, _delta: number) {}
 
-  lightAttack() {
-    // light red
-    this.character.setTintFill(0xff0000)
-    // duration 0.2s distance 50px
-  }
+    lightAttack() {
+        this.actions.push('lightAttack')
+    }
 
-  heavyAttack() {
-    // dark red
-    this.character.setTintFill(0x8b0000)
-  }
+    heavyAttack() {
+        this.actions.push('heavyAttack')
+    }
 
-  grabThrow() {
-    // light blue
-    this.character.setTintFill(0x0000ff)
-  }
+    grabThrow() {
+        this.actions.push('grabThrow')
+    }
 
-  special() {
-    // wellow
-    this.character.setTintFill(0xffff00)
-  }
+    special() {
+        this.actions.push('special')
+    }
 
-  shield() {
-    // dark blue
-    this.character.setTintFill(0x00ff00)
-  }
+    shield() {
+        this.actions.push('shield')
+    }
 
-  dodge() {
-    // light green
-    this.character.setTintFill(0x00ff00)
-  }
+    dodge() {
+        this.actions.push('dodge')
+    }
 
   moveUp() {
-    this.character.setVelocityY(-this.speed)
+    this.actions.push('moveUp')
   }
 
   moveDown() {
-    this.character.setVelocityY(this.speed)
+    this.actions.push('moveDown')
   }
 
-  moveLeft() {
-    this.character.setVelocityX(-this.speed)
-  }
+    moveLeft() {
+        this.actions.push('moveLeft')
+    }
 
-  moveRight() {
-    this.character.setVelocityX(this.speed)
-  }
+    moveRight() {
+        this.actions.push('moveRight')
+    }
 }
 
 export default Warrior
