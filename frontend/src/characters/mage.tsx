@@ -1,25 +1,18 @@
-import Weapon from '../weapons/weapon'
 import Character, { ICharacter } from './character'
 
 class Mage implements ICharacter {
-    character: Character
-    weapon: Weapon
+  character: Character
 
-    speed: number = 500
-    health: number = 100
-    attack: number = 10
-    defense: number = 10
-    specialAttack: number = 20
-
-    actions: string[]
+  speed: number = 500
+  maxHealth: number = 100
+  health: number = this.maxHealth
+  attack: number = 10
+  defense: number = 10
+  special: number = 20
+  actualAttack: void | null = null
 
   constructor(character: Character) {
     this.character = character
-
-        this.weapon = new Weapon(this.character.scene, this.character.x, this.character.y, 'sword', this.character)
-        this.weapon.y = this.character.y - 1
-
-        this.actions = []
 
     if (this.character && this.character.body) {
       this.character.setVelocity(100, 200)
@@ -36,48 +29,148 @@ class Mage implements ICharacter {
       throw new Error('Invalid character name')
     }
   }
-
-  update() {}
-
-    lightAttack() {
-        this.actions.push('lightAttack')
+  moveLeft(): void {
+    this.character.setVelocityX(-this.speed)
+  }
+  moveRight(): void {
+    this.character.setVelocityX(this.speed)
+  }
+  lightAttack(target: Character): void {
+    if (this.character.weapon) {
+      target.character.health -= this.character.weapon.weapon.attack
+    } else {
+      target.character.health -= this.attack
+    }
+  }
+  heavyAttack(target: Character): void {
+    if (this.character.weapon) {
+      target.character.health -= this.character.weapon.weapon.attack * 2
+    } else {
+      target.character.health -= this.attack * 2
+    }
+  }
+  lightAttackCombo(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  lightHeavyCombo(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  heavyLightCombo(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  heavyHeavyCombo(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  lightLightHeavyCombo(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  lightHeavyHeavyCombo(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  heavyHeavyLightCombo(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  lightHeavyLightCombo(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  lightDashAttack(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  heavyDashAttack(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  airLightAttack(target: Character): void {
+    target.character.health -= this.attack
+    target.setVelocityY(-300)
+  }
+  airHeavyAttack(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
     }
 
-    heavyAttack() {
-        this.actions.push('heavyAttack')
+    target.character.health -= this.attack * 2
+    target.setVelocityY(-600)
+    target.setVelocityX(this.character.body.velocity.x > 0 ? 400 : -400)
+  }
+  airLightAttackCombo(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  airHeavyAttackCombo(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  airDashAttack(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  wallJumpAttack(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  wallDashAttack(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  groundRecoveryAttack(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  airRecoveryAttack(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  specialAttack(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  superSpecialAttack(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  block(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  parry(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  dodge(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  jump(): void {
+    this.character.setVelocityY(-300)
+    this.character.inAir = true
+  }
+  doubleJump(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  wallJump(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  wallCling(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  wallSlide(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  dash(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
     }
 
-    grabThrow() {
-        this.actions.push('grabThrow')
+    this.character.setVelocityX(this.character.body.velocity.x > 0 ? 500 : -500)
+  }
+  airDash(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
     }
 
-    special() {
-        this.actions.push('special')
-    }
+    this.character.setVelocityX(this.character.body.velocity.x > 0 ? 700 : -700)
+    this.character.setVelocityY(this.character.body.velocity.y > 0 ? 700 : -700)
+  }
+  crouch(): void {
+    this.character.setVelocityX(0)
+    this.character.setVelocityY(600)
+  }
+  roll(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
+  taunt(target: Character): void {
+    throw new Error('Method not implemented.')
+  }
 
-    shield() {
-        this.actions.push('shield')
-    }
-
-    dodge() {
-        this.actions.push('dodge')
-    }
-
-    moveUp() {
-        this.actions.push('moveUp')
-    }
-
-    moveDown() {
-        this.actions.push('moveDown')
-    }
-
-    moveLeft() {
-        this.actions.push('moveLeft')
-    }
-
-    moveRight() {
-        this.actions.push('moveRight')
-    }
+  update(time: number, delta: number): void {}
 }
 
 export default Mage

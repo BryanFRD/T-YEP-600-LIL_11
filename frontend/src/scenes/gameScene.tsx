@@ -2,12 +2,16 @@ import { randomInt } from 'mathjs'
 import Phaser from 'phaser'
 
 import Character from '../characters/character'
-import Controller from '../characters/controller'
+import ControllerManager from '../characters/controllerManager'
 import { IScene } from './scene'
 
 class GameScene extends Phaser.Scene implements IScene {
+  controllerManager: ControllerManager | undefined
+
   constructor() {
     super('game')
+
+    this.controllerManager = undefined
   }
 
   preload() {
@@ -28,14 +32,9 @@ class GameScene extends Phaser.Scene implements IScene {
       new Character(this, randomInt(100, 700), randomInt(100, 500), 'warrior')
     }
 
-    new Controller(
+    this.controllerManager = new ControllerManager(
       this,
-      new Character(
-        this,
-        randomInt(100, 700),
-        randomInt(100, 500),
-        'mage'
-      ).character
+      new Character(this, randomInt(100, 700), randomInt(100, 500), 'mage')
     )
   }
 
@@ -45,6 +44,8 @@ class GameScene extends Phaser.Scene implements IScene {
         child.update(time, delta)
       }
     })
+    this.controllerManager?.update(time, delta)
+    console.log(this?.controllerManager?.character?.comboManager.currentCombo)
   }
 }
 

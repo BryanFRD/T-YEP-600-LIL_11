@@ -3,6 +3,7 @@
 import Phaser from 'phaser'
 
 import Weapon from '../weapons/weapon'
+import ComboManager from './comboManager'
 import Mage from './mage'
 import Warrior from './warrior'
 
@@ -16,31 +17,63 @@ export type CharacterObject = CharacterType[keyof CharacterType]
 
 export interface ICharacter {
   character: Character
-  weapon: Weapon
+
   speed: number
   health: number
+  maxHealth: number
   attack: number
   defense: number
-  specialAttack: number
+  special: number
+  actualAttack: void | null
 
-    actions: string[]
+  update(time: number, delta: number): void
 
-  lightAttack(): void
-  heavyAttack(): void
-  grabThrow(): void
-  special(): void
-  shield(): void
-  dodge(): void
-  moveUp(): void
-  moveDown(): void
-  moveLeft(): void
-  moveRight(): void
+  lightAttack(target: Character): void // input : light
+  heavyAttack(target: Character): void // input : heavy
+  lightAttackCombo(target: Character): void // input : lightlight
+  lightHeavyCombo(target: Character): void // input : lightheavy
+  heavyLightCombo(target: Character): void // input : heavylight
+  heavyHeavyCombo(target: Character): void // input : heavyheavy
+  lightLightHeavyCombo(target: Character): void // input : lightlightheavy
+  lightHeavyHeavyCombo(target: Character): void // input : lightheavyheavy
+  heavyHeavyLightCombo(target: Character): void // input : heavyheavylight
+  lightHeavyLightCombo(target: Character): void // input : lightheavylight
+  lightDashAttack(target: Character): void // input : lightdash
+  heavyDashAttack(target: Character): void // input : heavydash
+  airLightAttack(target: Character): void // input : airLight
+  airHeavyAttack(target: Character): void // input : airHeavy
+  airLightAttackCombo(target: Character): void // input : airLightLight
+  airHeavyAttackCombo(target: Character): void // input : airHeavyHeavy
+  airDashAttack(target: Character): void // input : airDash
+  wallJumpAttack(target: Character): void // input : wallJump
+  wallDashAttack(target: Character): void // input : wallDash
+  groundRecoveryAttack(target: Character): void // input : groundRecovery
+  airRecoveryAttack(target: Character): void // input : airRecovery
+  specialAttack(target: Character): void // input : special
+  jump(): void
+  dash(target: Character): void
+  crouch(): void // input : crouch
+  moveLeft(): void // input : left
+  moveRight(): void // input : right
 }
 
 class Character extends Phaser.Physics.Arcade.Sprite {
   character: CharacterObject
+  weapon: Weapon
+  comboManager: ComboManager
+
   text: Phaser.GameObjects.Text
   healthBar: Phaser.GameObjects.Graphics
+
+  movementFunctions: { [key: string]: () => void } = {
+    up: () => this.character.jump(),
+    down: () => this.character.crouch(),
+    left: () => this.character.moveLeft(),
+    right: () => this.character.moveRight()
+  }
+
+  inAir: boolean = false
+  inWall: boolean = false
 
   constructor(
     scene: Phaser.Scene,
@@ -57,13 +90,15 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     }
 
     this.setCollideWorldBounds(true)
-    this.setBounce(0.9)
+    this.setBounce(0)
     this.setGravityY(500)
     this.setGravityX(0)
 
     this.scene.add.existing(this)
 
     this.character = this.getCharacter(characterName)
+    this.comboManager = new ComboManager(this)
+
     //add collide bewtenn this character and other characters
     this.scene.physics.add.collider(
       this,
@@ -85,35 +120,59 @@ class Character extends Phaser.Physics.Arcade.Sprite {
 
     // Add the health bar as a child of the sprite character
     this.scene.add.existing(this.healthBar)
+
+    // Create a new weapon object for the character
+    this.weapon = new Weapon(this.scene, this.x, this.y, 'sword', this)
+    this.weapon.y = this.y - 1
   }
 
   update(time: number, delta: number) {
+    // Check if the character has a valid body
     if (!this.body) {
       throw new Error('Invalid character name')
     }
 
-    this.character.update(time, delta)
+    // Check if the character is in the air
+    if (
+      this.body.bottom >= this.scene.physics.world.bounds.height &&
+      this.inAir
+    ) {
+      this.inAir = false
+    }
 
+    // Update the character's
+    this.character.update(time, delta)
+    this.comboManager.update(time, delta)
+
+    const decelerationFactor = this.inAir ? 0.98 : 0.01
+
+    // Apply deceleration to the character's velocity
+    this.setVelocityX(
+      this.body.velocity.x * Math.pow(decelerationFactor, delta / 1000)
+    )
+    this.setVelocityY(
+      this.body.velocity.y * Math.pow(decelerationFactor, delta / 1000)
+    )
+
+    // Update the position of the text object to ensure it stays at the center of the sprite
     this.text.x = this.x + (this.body.velocity.x * delta) / 1000
     this.text.y = this.y + (this.body.velocity.y * delta) / 1000
 
-    if (this.character.character.body && this.character.weapon.body) {
-      this.character.weapon.body.velocity.x =
-        this.character.character.body.velocity.x
-      this.character.weapon.body.velocity.y =
-        this.character.character.body.velocity.y
+    // Update the position of the weapon based on the character's current position
+    if (this.weapon.body) {
+      this.weapon.body.velocity.x = this.body.velocity.x
+      this.weapon.body.velocity.y = this.body.velocity.y
 
-      const weaponSidePosition =
-        this.character.character.body.velocity.x < 0 ? -50 : 50
-      this.character.weapon.body.position.x =
-        this.character.character.x +
-        (this.character.character.body.velocity.x * delta) / 1000 +
+      const weaponSidePosition = this.body.velocity.x < 0 ? -50 : 50
+      this.weapon.body.position.x =
+        this.x +
+        (this.body.velocity.x * delta) / 1000 +
         weaponSidePosition -
-        this.character.weapon.body.width / 2
-      this.character.weapon.body.position.y =
-        this.character.character.y +
-        (this.character.character.body.velocity.y * delta) / 1000 -
-        this.character.weapon.body.height / 2
+        this.weapon.body.width / 2
+      this.weapon.body.position.y =
+        this.y +
+        (this.body.velocity.y * delta) / 1000 -
+        this.weapon.body.height / 2
     } else {
       throw new Error('Invalid character name')
     }
@@ -123,12 +182,27 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     this.healthBar.fillStyle(0xff0000, 1)
     this.healthBar.fillRect(0, 0, this.width, 5)
     this.healthBar.fillStyle(0x00ff00, 1)
-    this.healthBar.fillRect(0, 0, (this.character.health / 100) * this.width, 5)
+    this.healthBar.fillRect(
+      0,
+      0,
+      (this.character.health / this.character.maxHealth) * this.width,
+      5
+    )
 
-        // Update the position of the health bar to ensure it stays at the bottom of the sprite character
-        this.healthBar.x = this.x - this.width / 2 + (this.body.velocity.x * delta) / 1000
-        this.healthBar.y = this.y + this.height / 2 + (this.body.velocity.y * delta) / 1000
+    // Update the position of the health bar to ensure it stays at the bottom of the sprite character
+    this.healthBar.x =
+      this.x - this.width / 2 + (this.body.velocity.x * delta) / 1000
+    this.healthBar.y =
+      this.y + this.height / 2 + (this.body.velocity.y * delta) / 1000
+  }
+
+  controlerInput(key: string) {
+    if (this.movementFunctions[key]) {
+      this.movementFunctions[key]()
+    } else {
+      this.comboManager.inputReceived(key)
     }
+  }
 
   getCharacter(characterName: CharacterName): CharacterObject {
     switch (characterName) {
@@ -145,7 +219,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     this.destroy()
     this.text.destroy()
     this.healthBar.destroy()
-    this.character.weapon.deleteWeapon()
+    this.weapon.deleteWeapon()
   }
 }
 
