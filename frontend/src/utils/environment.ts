@@ -1,25 +1,29 @@
 import logger from './logger'
 
 type ConfigKey =
+  | 'BASE URL'
   | 'MODE'
-  | 'BASE_URL'
   | 'PROD'
   | 'DEV'
   | 'SSR'
   | 'LOG_LEVEL'
   | 'API_URL'
+  | 'SERVER_URL'
   | 'STUN_URL'
   | 'TURN_URL'
   | 'TURN_USERNAME'
-  | 'TURN_PASSWORD'
+  | 'TURN_CREDENTIAL'
 
-const getEnvValue = (key: ConfigKey): string | undefined => {
+const getEnvValue = (
+  key: ConfigKey,
+  defaultValue?: string
+): string | undefined => {
   const value = get(`VITE_${key}`) ?? get(key)
   if (!value) {
     logger.error(
       `Missing environment variable VITE_${key}, please check your .env file`
     )
-    return undefined
+    return defaultValue ?? undefined
   }
   return value
 }
