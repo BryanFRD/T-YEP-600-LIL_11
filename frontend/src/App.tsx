@@ -1,11 +1,7 @@
-import PhaserGame from './game'
+import LoginPage from './components/Auth/loginPage'
 
 function App() {
-  return (
-    <>
-      <PhaserGame />
-    </>
-  )
+  return <LoginPage />
 }
 
 export default App
