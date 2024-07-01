@@ -2,7 +2,6 @@ import log from 'loglevel'
 
 const getCallerInfo = () => {
   const stack = new Error().stack
-  console.log('stack:', stack)
   const stackLines = stack?.split('\n')
   const callerLine = stackLines?.[3]
   const match =
