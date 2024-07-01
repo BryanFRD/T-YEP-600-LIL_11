@@ -1,4 +1,3 @@
-import fs from 'fs' // Import the 'fs' module
 import Phaser from 'phaser'
 
 import { IScene } from './scene'
@@ -9,14 +8,7 @@ class MenuScene extends Phaser.Scene implements IScene {
   }
 
   preload() {
-    this.load.image(
-      'newGameButton',
-      'frontend/src/assets/panel-4481756_1280.png'
-    )
-    console.log(this.textures.exists('newGameButton'))
-    //test path to the image
-    console.log(fs.existsSync('../assets/panel-4481756_1280.png'))
-
+    this.load.image('newGameButton', 'path/to/newGameButton.png')
     this.load.image('continueButton', 'path/to/continueButton.png')
     this.load.image('saveButton', 'path/to/saveButton.png')
     this.load.image('optionsButton', 'path/to/optionsButton.png')
