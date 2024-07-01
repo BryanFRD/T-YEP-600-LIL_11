@@ -57,7 +57,7 @@ type ServerEventPayloads = {
   }
 }
 
-const ServerContext = createContext<ServerContextValue>(initialContextValue);
+const ServerContext = createContext<ServerContextValue>(initialContextValue)
 
 export const ServerContextProvider: React.FC<PropsWithChildren> = ({
   children
@@ -133,28 +133,28 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
       Object.values(ServerEvent).forEach(event => {
         client.on(event, payload => {
           handleEvent(event, payload as never)
-        });
-      });
-    });
-    
+        })
+      })
+    })
+
     const pingIntervale = setInterval(() => {
-      emit(ServerEvent.PING, { date: Date.now() });
-    }, 1000);
-    
+      emit(ServerEvent.PING, { date: Date.now() })
+    }, 1000)
+
     const pongHandler = (payload: ServerEventPayloads[ServerEvent.PONG]) => {
-      const latency = Date.now() - payload.date;
-      
-      logger.info('Latency:', latency);
+      const latency = Date.now() - payload.date
+
+      logger.info('Latency:', latency)
     }
-    
-    addEventHandler(ServerEvent.PONG, pongHandler);
-    
+
+    addEventHandler(ServerEvent.PONG, pongHandler)
+
     return () => {
-      if(client) {
-        client.close();
-        
-        clearInterval(pingIntervale);
-        removeEventHandler(ServerEvent.PONG, pongHandler);
+      if (client) {
+        client.close()
+
+        clearInterval(pingIntervale)
+        removeEventHandler(ServerEvent.PONG, pongHandler)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
