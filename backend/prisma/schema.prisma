@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id        String      @id @default(cuid())
+  email     String      @unique 
+  name      String?
+  firstname String?
+  password  String? 
+  username  String?     @unique
+  lastConnection DateTime?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  deletedAt DateTime?
+  games     PlayerGame[]
+  stats     PlayerStats? @relation(name: "PlayerStats", fields: [id], references: [playerId])
+
+  @@map("players")
+}
+
+model Game {
+  id         String      @id @default(cuid())
+  finishedAt DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  deletedAt  DateTime?
+  players    PlayerGame[]
+}
+
+model PlayerGame {
+  id         String   @id @default(cuid())
+  playerId   String
+  gameId     String
+  team       String
+  countDeath Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deletedAt  DateTime?
+
+  player Player @relation(fields: [playerId], references: [id])
+  game   Game   @relation(fields: [gameId], references: [id])
+}
+
+model PlayerStats {
+  id         String   @id @default(cuid())
+  playerId   String   @unique
+  countKill  Int
+  countDeath Int
+  countAssist Int
+  countWin   Int
+  countLose  Int
+  countDraw  Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deletedAt  DateTime?
+
+  player Player? @relation(name: "PlayerStats")
+}
