@@ -3,8 +3,8 @@ type FormInputComponentProps = {
   name?: string
   placeholder?: string
   className?: string
-    text?: string
-    value?: string
+  text?: string
+  value?: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -22,7 +22,6 @@ const FormInputComponent = ({
         name={name}
         placeholder={placeholder}
         className={`${className ?? ''} forminputcomponent_input`}
-        
       ></input>
       {text && <p>{text}</p>}
     </>
