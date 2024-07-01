@@ -1,10 +1,14 @@
 import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv';
+import logger from './logger/logger';
+import * as dotenv from 'dotenv';
+import * as sequelize from './db/db';
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
+
+logger.info('🚀 Server is starting...');
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server');
