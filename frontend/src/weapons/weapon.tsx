@@ -54,8 +54,8 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
       throw new Error('Invalid weapon name')
     }
 
-    this.body.gravity.y = 0
-    this.body.gravity.x = 0
+    this.setGravityY(1000)
+    this.setGravityX(0)
 
     this.name = 'weapon: ' + weaponName
     this.weapon = this.getWeapon(weaponName)
@@ -85,7 +85,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         const weaponObject = weapon as Weapon
         const characterObject = character as Character
 
-        this.character?.comboManager.checkCombo(characterObject)
+        this.character?.comboManager.checkAttack(characterObject)
 
         if (characterObject.character.health <= 0) {
           characterObject.deleteCharacter()
@@ -121,6 +121,11 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
   deleteWeapon() {
     this.destroy()
     this.text.destroy()
+
+    if (this.character) {
+      this.character.weapon = null
+      this.character = null
+    }
   }
 
   setCharacter(character: Character | null) {

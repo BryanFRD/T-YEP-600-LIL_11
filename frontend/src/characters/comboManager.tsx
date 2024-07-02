@@ -1,129 +1,147 @@
 import Character from './character'
 
-// 'up',
-// 'down',
-//  'left',
-// 'right',
-// 'lightAttack',
-// 'heavyAttack',
-// 'grabThrow',
-// 'special',
-// 'shield',
-// 'dodge',
-
 class ComboManager {
   public currentCombo: string[] = []
+  private currentAttack: string | null = null
+  private attackTimer: number = 0
+  private attackDelay: number = 500 // milliseconds between each input for considering it as the same input
   private comboTimer: number = 0
-  private comboDelay: number = 500 // temps en millisecondes entre chaque input pour considérer qu'il s'agit du même combo
-  private controlFunctions: { [key: string]: (target: Character) => void } = {
+  private comboDelay: number = 500 // milliseconds between each input for considering it as the same combo
+  private controlFunctionsWithTarget: {
+    [key: string]: (target: Character) => void
+  } = {
     light: (target: Character) => this.character.character.lightAttack(target),
     heavy: (target: Character) => this.character.character.heavyAttack(target),
-    lightlight: (target: Character) =>
-      this.character.character.lightAttackCombo(target),
-    lightheavy: (target: Character) =>
-      this.character.character.lightHeavyCombo(target),
-    heavylight: (target: Character) =>
-      this.character.character.heavyLightCombo(target),
-    heavyheavy: (target: Character) =>
-      this.character.character.heavyHeavyCombo(target),
-    lightlightheavy: (target: Character) =>
-      this.character.character.lightLightHeavyCombo(target),
-    lightheavyheavy: (target: Character) =>
-      this.character.character.lightHeavyHeavyCombo(target),
-    heavyheavylight: (target: Character) =>
-      this.character.character.heavyHeavyLightCombo(target),
-    lightheavylight: (target: Character) =>
-      this.character.character.lightHeavyLightCombo(target),
-    lightdash: (target: Character) =>
-      this.character.character.lightDashAttack(target),
-    heavydash: (target: Character) =>
-      this.character.character.heavyDashAttack(target),
+    dash: (target: Character) => this.character.character.dash(target),
     airlight: (target: Character) =>
       this.character.character.airLightAttack(target),
     airheavy: (target: Character) =>
       this.character.character.airHeavyAttack(target),
-    airlightlight: (target: Character) =>
-      this.character.character.airLightAttackCombo(target),
-    airheavyheavy: (target: Character) =>
-      this.character.character.airHeavyAttackCombo(target),
-    airdash: (target: Character) => this.character.character.airDash(target),
-    // walljump: (target: Character) => this.character.character.wallJumpAttack(target),
-    // walldash: (target: Character) => this.character.character.wallDashAttack(target),
-    // groundRecovery: (target: Character) =>
-    //   this.character.character.groundRecoveryAttack(target),
-    // airRecovery: (target: Character) =>
-    //   this.character.character.airRecoveryAttack(target),
+    airdash: () => this.character.character.airDash(),
+    walljump: (target: Character) =>
+      this.character.character.wallJumpAttack(target),
+    walldash: (target: Character) =>
+      this.character.character.wallDashAttack(target),
+    grabThrow: (target: Character) =>
+      this.character.character.grabThrow(target),
     special: (target: Character) =>
       this.character.character.specialAttack(target)
+  }
+  private controlFunctionsWithoutTarget: { [key: string]: () => void } = {
+    grabThrow: () => this.character.character.grabThrow()
+  }
+
+  private functionCooldowns: { [key: string]: number } = {
+    light: 250,
+    heavy: 1000,
+    dash: 500,
+    airlight: 250,
+    airheavy: 1000,
+    airdash: 500,
+    walljump: 250,
+    walldash: 1000,
+    grabThrow: 500,
+    special: 1000
+  }
+  private functionTimers: { [key: string]: number } = {
+    light: 0,
+    heavy: 0,
+    dash: 0,
+    airlight: 0,
+    airheavy: 0,
+    airdash: 0,
+    walljump: 0,
+    walldash: 0,
+    grabThrow: 0,
+    special: 0
   }
 
   constructor(private character: Character) {}
 
   public update(time: number, delta: number): void {
-    // Mettre à jour le timer du combo
+    // Update the combo timer and the attack timers
     this.comboTimer -= delta
+    this.attackTimer -= delta
+    for (let attack in this.functionTimers) {
+      this.functionTimers[attack] -= delta
+    }
 
-    // Si le timer est écoulé, réinitialiser le combo
+    // If the combo timer is expired, reset the combo
     if (this.comboTimer <= 0) {
       this.resetCombo()
     }
   }
 
   public inputReceived(input: string): void {
-    // Si le timer est écoulé, réinitialiser le combo
-    if (this.comboTimer <= 0) {
-      this.resetCombo()
-    }
-
-    //Si l'intput est déjà dans le combo actuel, ne pas l'ajouter
+    // If the input is the same as the last input, do not add it
     if (this.currentCombo[this.currentCombo.length - 1] === input) {
       return
     }
 
-    // Ajouter l'input au combo actuel
-    this.currentCombo.push(input)
+    // If the combo timer is expired, reset the combo
+    if (this.comboTimer <= 0) {
+      this.resetCombo()
+    }
 
-    // Réinitialiser le timer du combo
+    // Add the input to the current combo
+    this.currentCombo.push(input)
+    this.currentAttack = input
+
+    // If the input is a special attack or a ranged attack, perform it immediately
+    if (input === 'special' || input === 'grabThrow') {
+      this.checkAttack()
+      return
+    }
+
+    // Reset the combo timer
     this.comboTimer = this.comboDelay
   }
 
-  public checkCombo(target: Character): void {
-    // tester si le combo actuel est un combo valide
-    for (let i = 0; i < this.currentCombo.length; i++) {
-      // Si le personnage est en l'air et que le combo est un combo aérien, exécuter le combo
-      if (
-        this.character.inAir &&
-        this.controlFunctions[
-          ['air', this.currentCombo.slice(i, this.currentCombo.length)].join('')
-        ]
-      ) {
-        this.controlFunctions[
-          ['air', this.currentCombo.slice(i, this.currentCombo.length)].join('')
-        ](target)
-        console.log(
-          ['air', this.currentCombo.slice(i, this.currentCombo.length)].join('')
-        )
-        break
+  public checkAttack(target?: Character): void {
+    // If the attack timer is not expired, do not process the attack
+    if (this.attackTimer > 0) {
+      return
+    }
+
+    // Test if the current attack is valid and not on cooldown
+    if (target) {
+      if (this.currentAttack && this.functionTimers[this.currentAttack] <= 0) {
+        if (this.controlFunctionsWithTarget[this.currentAttack]) {
+          this.controlFunctionsWithTarget[this.currentAttack](target)
+
+          // Set the cooldown for the current attack
+          this.functionTimers[this.currentAttack] =
+            this.functionCooldowns[this.currentAttack]
+
+          // Reset Attack
+          this.currentAttack = null
+        }
+
+        // Reset the attack timer
+        this.attackTimer = this.attackDelay
       }
-      // Sinon, si le combo est un combo au sol, exécuter le combo
-      else if (
-        this.controlFunctions[
-          this.currentCombo.slice(i, this.currentCombo.length).join('')
-        ]
-      ) {
-        this.controlFunctions[
-          this.currentCombo.slice(i, this.currentCombo.length).join('')
-        ](target)
-        console.log(
-          this.currentCombo.slice(i, this.currentCombo.length).join('')
-        )
-        break
+    } else {
+      if (this.currentAttack && this.functionTimers[this.currentAttack] <= 0) {
+        if (this.controlFunctionsWithoutTarget[this.currentAttack]) {
+          this.controlFunctionsWithoutTarget[this.currentAttack]()
+
+          // Set the cooldown for the current attack
+          this.functionTimers[this.currentAttack] =
+            this.functionCooldowns[this.currentAttack]
+
+          // Reset Attack
+          this.currentAttack = null
+        }
+
+        // Reset the attack timer
+        this.attackTimer = this.attackDelay
       }
     }
   }
 
   private resetCombo(): void {
     this.currentCombo = []
+    this.currentAttack = null
   }
 }
 

@@ -24,34 +24,20 @@ export interface ICharacter {
   attack: number
   defense: number
   special: number
-  actualAttack: void | null
 
   update(time: number, delta: number): void
 
   lightAttack(target: Character): void // input : light
   heavyAttack(target: Character): void // input : heavy
-  lightAttackCombo(target: Character): void // input : lightlight
-  lightHeavyCombo(target: Character): void // input : lightheavy
-  heavyLightCombo(target: Character): void // input : heavylight
-  heavyHeavyCombo(target: Character): void // input : heavyheavy
-  lightLightHeavyCombo(target: Character): void // input : lightlightheavy
-  lightHeavyHeavyCombo(target: Character): void // input : lightheavyheavy
-  heavyHeavyLightCombo(target: Character): void // input : heavyheavylight
-  lightHeavyLightCombo(target: Character): void // input : lightheavylight
-  lightDashAttack(target: Character): void // input : lightdash
-  heavyDashAttack(target: Character): void // input : heavydash
   airLightAttack(target: Character): void // input : airLight
   airHeavyAttack(target: Character): void // input : airHeavy
-  airLightAttackCombo(target: Character): void // input : airLightLight
-  airHeavyAttackCombo(target: Character): void // input : airHeavyHeavy
-  airDashAttack(target: Character): void // input : airDash
   wallJumpAttack(target: Character): void // input : wallJump
   wallDashAttack(target: Character): void // input : wallDash
-  groundRecoveryAttack(target: Character): void // input : groundRecovery
-  airRecoveryAttack(target: Character): void // input : airRecovery
   specialAttack(target: Character): void // input : special
+  grabThrow(target?: Character): void // input : grabThrow
   jump(): void
-  dash(target: Character): void
+  dash(target?: Character): void
+  airDash(target?: Character): void
   crouch(): void // input : crouch
   moveLeft(): void // input : left
   moveRight(): void // input : right
@@ -59,7 +45,7 @@ export interface ICharacter {
 
 class Character extends Phaser.Physics.Arcade.Sprite {
   character: CharacterObject
-  weapon: Weapon
+  weapon: Weapon | null
   comboManager: ComboManager
 
   text: Phaser.GameObjects.Text
@@ -72,7 +58,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     right: () => this.character.moveRight()
   }
 
-  inAir: boolean = false
+  inAir: boolean = true
   inWall: boolean = false
 
   constructor(
@@ -91,21 +77,13 @@ class Character extends Phaser.Physics.Arcade.Sprite {
 
     this.setCollideWorldBounds(true)
     this.setBounce(0)
-    this.setGravityY(500)
+    this.setGravityY(2000)
     this.setGravityX(0)
 
     this.scene.add.existing(this)
 
     this.character = this.getCharacter(characterName)
     this.comboManager = new ComboManager(this)
-
-    //add collide bewtenn this character and other characters
-    this.scene.physics.add.collider(
-      this,
-      this.scene.children
-        .getAll()
-        .filter(child => child instanceof Character && child !== this)
-    )
 
     this.text = this.scene.add.text(0, 0, characterName, { color: '#0f0' })
     this.text.setOrigin(0.5) // set the origin of the text object to the center
@@ -159,7 +137,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     this.text.y = this.y + (this.body.velocity.y * delta) / 1000
 
     // Update the position of the weapon based on the character's current position
-    if (this.weapon.body) {
+    if (this.weapon && this.weapon.body) {
       this.weapon.body.velocity.x = this.body.velocity.x
       this.weapon.body.velocity.y = this.body.velocity.y
 
@@ -173,8 +151,6 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         this.y +
         (this.body.velocity.y * delta) / 1000 -
         this.weapon.body.height / 2
-    } else {
-      throw new Error('Invalid character name')
     }
 
     // Update the size of the health bar based on the character's current health
@@ -219,7 +195,9 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     this.destroy()
     this.text.destroy()
     this.healthBar.destroy()
-    this.weapon.deleteWeapon()
+    if (this.weapon) {
+      this.weapon.deleteWeapon()
+    }
   }
 }
 

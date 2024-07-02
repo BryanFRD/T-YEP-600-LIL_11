@@ -1,15 +1,17 @@
+import { abs, ConstantNode, typeOf } from 'mathjs'
+
+import Weapon from '../weapons/weapon'
 import Character, { ICharacter } from './character'
 
 class Mage implements ICharacter {
   character: Character
 
-  speed: number = 500
+  speed: number = 300
   maxHealth: number = 100
   health: number = this.maxHealth
   attack: number = 10
   defense: number = 10
   special: number = 20
-  actualAttack: void | null = null
 
   constructor(character: Character) {
     this.character = character
@@ -29,11 +31,71 @@ class Mage implements ICharacter {
       throw new Error('Invalid character name')
     }
   }
+  wallDashAttack(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+    target.character.health -= this.attack * 2
+    target.setVelocityY(-600)
+    target.setVelocityX(this.character.body.velocity.x > 0 ? 800 : -800)
+  }
+  specialAttack(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+    target.character.health -= this.special * 2
+    target.setVelocityY(this.character.body.velocity.y > 0 ? 500 : -500)
+    target.setVelocityX(this.character.body.velocity.x > 0 ? 500 : -500)
+  }
+  grabThrow(target?: Character | Weapon): void {
+    console.log('grabThrow', target)
+    if (this.character.weapon && this.character.body) {
+      // eject weapon
+      this.character.weapon.character = null
+
+      const angle = Math.atan2(
+        this.character.body.velocity.y,
+        this.character.body.velocity.x
+      )
+      this.character.weapon.setVelocityY(Math.sin(angle) * 1000)
+      this.character.weapon.setVelocityX(Math.cos(angle) * 1000)
+      this.character.weapon = null
+    }
+
+    if (target && target.body && target instanceof Weapon) {
+      this.character.weapon = target
+      target.setCharacter(this.character)
+    }
+  }
+  wallJumpAttack(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+    target.character.health -= this.attack
+    target.setVelocityY(-600)
+    target.setVelocityX(this.character.body.velocity.x > 0 ? 400 : -400)
+  }
   moveLeft(): void {
-    this.character.setVelocityX(-this.speed)
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
+    if (this.character.body.velocity.x >= -this.speed) {
+      this.character.setAccelerationX(-this.speed * 10)
+    } else {
+      this.character.setVelocityX(-this.speed)
+    }
   }
   moveRight(): void {
-    this.character.setVelocityX(this.speed)
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
+    if (this.character.body.velocity.x <= this.speed) {
+      this.character.setAccelerationX(this.speed * 10)
+    } else {
+      this.character.setVelocityX(this.speed)
+    }
   }
   lightAttack(target: Character): void {
     if (this.character.weapon) {
@@ -43,45 +105,30 @@ class Mage implements ICharacter {
     }
   }
   heavyAttack(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
     if (this.character.weapon) {
       target.character.health -= this.character.weapon.weapon.attack * 2
     } else {
       target.character.health -= this.attack * 2
     }
-  }
-  lightAttackCombo(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  lightHeavyCombo(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  heavyLightCombo(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  heavyHeavyCombo(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  lightLightHeavyCombo(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  lightHeavyHeavyCombo(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  heavyHeavyLightCombo(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  lightHeavyLightCombo(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  lightDashAttack(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  heavyDashAttack(target: Character): void {
-    throw new Error('Method not implemented.')
+
+    //calculate trigo for the angle of the attack with the velocity
+    const angle = Math.atan2(
+      this.character.body.velocity.y,
+      this.character.body.velocity.x
+    )
+
+    // use the angle to calculate the velocity of the attack
+    target.setVelocityY(Math.sin(angle) * 1000)
+    target.setVelocityX(Math.cos(angle) * 1000)
+
+    target.inAir = true
   }
   airLightAttack(target: Character): void {
     target.character.health -= this.attack
-    target.setVelocityY(-300)
   }
   airHeavyAttack(target: Character): void {
     if (!this.character.body) {
@@ -89,88 +136,87 @@ class Mage implements ICharacter {
     }
 
     target.character.health -= this.attack * 2
-    target.setVelocityY(-600)
-    target.setVelocityX(this.character.body.velocity.x > 0 ? 400 : -400)
-  }
-  airLightAttackCombo(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  airHeavyAttackCombo(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  airDashAttack(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  wallJumpAttack(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  wallDashAttack(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  groundRecoveryAttack(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  airRecoveryAttack(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  specialAttack(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  superSpecialAttack(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  block(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  parry(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  dodge(target: Character): void {
-    throw new Error('Method not implemented.')
+
+    //calculate trigo for the angle of the attack with the velocity
+    const angle = Math.atan2(
+      this.character.body.velocity.y,
+      this.character.body.velocity.x
+    )
+    // use the angle to calculate the velocity of the attack
+    target.setVelocityY(Math.sin(angle) * 1000)
+    target.setVelocityX(Math.cos(angle) * 1000)
+
+    target.inAir = true
   }
   jump(): void {
-    this.character.setVelocityY(-300)
+    if (!this.character.inAir) {
+      this.character.setVelocityY(-this.speed * 3)
+      this.character.inAir = true
+    }
+  }
+  dash(target?: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
+    if (target && target.body) {
+      // dash to the target
+      this.character.setPosition(
+        this.character.body.velocity.x > 0
+          ? target.x + target.body.width
+          : target.x - this.character.body.width,
+        target.y
+      )
+    } else {
+      this.character.setPosition(
+        this.character.body.velocity.x > 0
+          ? this.character.x + 100
+          : this.character.x - 100,
+        this.character.y
+      )
+    }
+  }
+
+  airDash(): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
+    // calculate trigo for the angle of the attack with the velocity
+    const angle = Math.atan2(
+      this.character.body.velocity.y,
+      this.character.body.velocity.x
+    )
+
+    // use the angle to calculate the velocity of the dash
+    const dashDistance = 100 // distance to dash
+    const dashX = this.character.x + dashDistance * Math.cos(angle)
+    const dashY = this.character.y + dashDistance * Math.sin(angle)
+
+    this.character.setPosition(dashX, dashY)
     this.character.inAir = true
   }
-  doubleJump(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  wallJump(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  wallCling(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  wallSlide(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  dash(target: Character): void {
-    if (!this.character.body) {
-      throw new Error('Invalid character name')
-    }
 
-    this.character.setVelocityX(this.character.body.velocity.x > 0 ? 500 : -500)
-  }
-  airDash(target: Character): void {
-    if (!this.character.body) {
-      throw new Error('Invalid character name')
-    }
-
-    this.character.setVelocityX(this.character.body.velocity.x > 0 ? 700 : -700)
-    this.character.setVelocityY(this.character.body.velocity.y > 0 ? 700 : -700)
-  }
   crouch(): void {
-    this.character.setVelocityX(0)
-    this.character.setVelocityY(600)
-  }
-  roll(target: Character): void {
-    throw new Error('Method not implemented.')
-  }
-  taunt(target: Character): void {
-    throw new Error('Method not implemented.')
+    this.character.setAccelerationY(this.speed * 10)
   }
 
-  update(time: number, delta: number): void {}
+  update(time: number, delta: number): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
+    if (abs(this.character.body.velocity.x) > this.speed) {
+      this.character.setAccelerationX(0)
+    }
+
+    if (
+      abs(this.character.body.velocity.y) > this.speed * 2 ||
+      !this.character.inAir
+    ) {
+      this.character.setAccelerationY(0)
+    }
+  }
 }
 
 export default Mage

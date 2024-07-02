@@ -45,7 +45,6 @@ class GameScene extends Phaser.Scene implements IScene {
       }
     })
     this.controllerManager?.update(time, delta)
-    console.log(this?.controllerManager?.character?.comboManager.currentCombo)
   }
 }
 

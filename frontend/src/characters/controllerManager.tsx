@@ -39,9 +39,6 @@ class ControllerManager {
       special: this.scene.input.keyboard.addKey(
         Phaser.Input.Keyboard.KeyCodes.R
       ),
-      shield: this.scene.input.keyboard.addKey(
-        Phaser.Input.Keyboard.KeyCodes.D
-      ),
       dash: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
     }
     this.keyStatus = {

@@ -14,9 +14,14 @@ const PhaserGame = () => {
     }
 
     const config = {
-      type: Phaser.AUTO,
+      type: Phaser.WEBGL,
       width: window.innerWidth,
       height: window.innerHeight,
+      fps: {
+        target: 60,
+        forceSetTimeOut: true
+      },
+      powerPreference: 'high-performance',
       scene: Scene(),
       physics: {
         default: 'arcade',
@@ -25,7 +30,7 @@ const PhaserGame = () => {
             y: 50,
             x: 0
           },
-          debug: false
+          debug: true
         }
       }
     }
