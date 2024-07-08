@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { useEffect, useRef } from 'react'
 
+import config from './config'
 import Scene from './scenes/scene'
 import logger from './logger/logger'
 
@@ -15,24 +16,7 @@ const PhaserGame = () => {
       return
     }
 
-    const config = {
-      type: Phaser.AUTO,
-      width: window.innerWidth,
-      height: window.innerHeight,
-      scene: Scene(),
-      physics: {
-        default: 'arcade',
-        arcade: {
-          gravity: {
-            y: 50,
-            x: 0
-          },
-          debug: false
-        }
-      }
-    }
-
-    const game = new Phaser.Game(config)
+    const game = new Phaser.Game({ ...config.game })
     gameInstanceRef.current = game
 
     return () => {

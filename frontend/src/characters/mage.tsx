@@ -1,35 +1,20 @@
+import { abs, ConstantNode, typeOf } from 'mathjs'
+
 import Weapon from '../weapons/weapon'
 import Character, { ICharacter } from './character'
 
 class Mage implements ICharacter {
   character: Character
 
-  action: string[] = [
-    'lightAttack',
-    'heavyAttack',
-    'grabThrow',
-    'special',
-    'shield',
-    'dodge'
-  ]
-  speed: number = 500
-  health: number = 100
+  speed: number = 300
+  maxHealth: number = 100
+  health: number = this.maxHealth
   attack: number = 10
   defense: number = 10
-  specialAttack: number = 20
-  weapon: Weapon
+  special: number = 20
 
   constructor(character: Character) {
     this.character = character
-
-    this.weapon = new Weapon(
-      this.character.scene,
-      this.character.x,
-      this.character.y,
-      'sword',
-      this.character
-    )
-    this.weapon.y = this.character.y - 1
 
     if (this.character && this.character.body) {
       this.character.setVelocity(100, 200)
@@ -46,54 +31,191 @@ class Mage implements ICharacter {
       throw new Error('Invalid character name')
     }
   }
+  wallDashAttack(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+    target.character.health -= this.attack * 2
+    target.setVelocityY(-600)
+    target.setVelocityX(this.character.body.velocity.x > 0 ? 800 : -800)
+  }
+  specialAttack(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+    target.character.health -= this.special * 2
+    target.setVelocityY(this.character.body.velocity.y > 0 ? 500 : -500)
+    target.setVelocityX(this.character.body.velocity.x > 0 ? 500 : -500)
+  }
+  grabThrow(target?: Character | Weapon): void {
+    console.log('grabThrow', target)
+    if (this.character.weapon && this.character.body) {
+      // eject weapon
+      this.character.weapon.character = null
 
-  update() {}
+      const angle = Math.atan2(
+        this.character.body.velocity.y,
+        this.character.body.velocity.x
+      )
+      this.character.weapon.setVelocityY(Math.sin(angle) * 1000)
+      this.character.weapon.setVelocityX(Math.cos(angle) * 1000)
+      this.character.weapon = null
+    }
 
-  lightAttack() {
-    // light red
-    this.character.setTintFill(0xff0000)
-    // duration 0.2s distance 50px
+    if (target && target.body && target instanceof Weapon) {
+      this.character.weapon = target
+      target.setCharacter(this.character)
+    }
+  }
+  wallJumpAttack(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+    target.character.health -= this.attack
+    target.setVelocityY(-600)
+    target.setVelocityX(this.character.body.velocity.x > 0 ? 400 : -400)
+  }
+  moveLeft(): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
+    if (this.character.body.velocity.x >= -this.speed) {
+      this.character.setAccelerationX(-this.speed * 10)
+    } else {
+      this.character.setVelocityX(-this.speed)
+    }
+  }
+  moveRight(): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
+    if (this.character.body.velocity.x <= this.speed) {
+      this.character.setAccelerationX(this.speed * 10)
+    } else {
+      this.character.setVelocityX(this.speed)
+    }
+  }
+  lightAttack(target: Character): void {
+    if (this.character.weapon) {
+      target.character.health -= this.character.weapon.weapon.attack
+    } else {
+      target.character.health -= this.attack
+    }
+  }
+  heavyAttack(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
+    if (this.character.weapon) {
+      target.character.health -= this.character.weapon.weapon.attack * 2
+    } else {
+      target.character.health -= this.attack * 2
+    }
+
+    //calculate trigo for the angle of the attack with the velocity
+    const angle = Math.atan2(
+      this.character.body.velocity.y,
+      this.character.body.velocity.x
+    )
+
+    // use the angle to calculate the velocity of the attack
+    target.setVelocityY(Math.sin(angle) * 1000)
+    target.setVelocityX(Math.cos(angle) * 1000)
+
+    target.inAir = true
+  }
+  airLightAttack(target: Character): void {
+    target.character.health -= this.attack
+  }
+  airHeavyAttack(target: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
+    target.character.health -= this.attack * 2
+
+    //calculate trigo for the angle of the attack with the velocity
+    const angle = Math.atan2(
+      this.character.body.velocity.y,
+      this.character.body.velocity.x
+    )
+    // use the angle to calculate the velocity of the attack
+    target.setVelocityY(Math.sin(angle) * 1000)
+    target.setVelocityX(Math.cos(angle) * 1000)
+
+    target.inAir = true
+  }
+  jump(): void {
+    if (!this.character.inAir) {
+      this.character.setVelocityY(-this.speed * 3)
+      this.character.inAir = true
+    }
+  }
+  dash(target?: Character): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
+    if (target && target.body) {
+      // dash to the target
+      this.character.setPosition(
+        this.character.body.velocity.x > 0
+          ? target.x + target.body.width
+          : target.x - this.character.body.width,
+        target.y
+      )
+    } else {
+      this.character.setPosition(
+        this.character.body.velocity.x > 0
+          ? this.character.x + 100
+          : this.character.x - 100,
+        this.character.y
+      )
+    }
   }
 
-  heavyAttack() {
-    // dark red
-    this.character.setTintFill(0x8b0000)
+  airDash(): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
+
+    // calculate trigo for the angle of the attack with the velocity
+    const angle = Math.atan2(
+      this.character.body.velocity.y,
+      this.character.body.velocity.x
+    )
+
+    // use the angle to calculate the velocity of the dash
+    const dashDistance = 100 // distance to dash
+    const dashX = this.character.x + dashDistance * Math.cos(angle)
+    const dashY = this.character.y + dashDistance * Math.sin(angle)
+
+    this.character.setPosition(dashX, dashY)
+    this.character.inAir = true
   }
 
-  grabThrow() {
-    // light blue
-    this.character.setTintFill(0x0000ff)
+  crouch(): void {
+    this.character.setAccelerationY(this.speed * 10)
   }
 
-  special() {
-    // wellow
-    this.character.setTintFill(0xffff00)
-  }
+  update(time: number, delta: number): void {
+    if (!this.character.body) {
+      throw new Error('Invalid character name')
+    }
 
-  shield() {
-    // dark blue
-    this.character.setTintFill(0x00ff00)
-  }
+    if (abs(this.character.body.velocity.x) > this.speed) {
+      this.character.setAccelerationX(0)
+    }
 
-  dodge() {
-    // light green
-    this.character.setTintFill(0x00ff00)
-  }
-
-  moveUp() {
-    this.character.setVelocityY(-this.speed)
-  }
-
-  moveDown() {
-    this.character.setVelocityY(this.speed)
-  }
-
-  moveLeft() {
-    this.character.setVelocityX(-this.speed)
-  }
-
-  moveRight() {
-    this.character.setVelocityX(this.speed)
+    if (
+      abs(this.character.body.velocity.y) > this.speed * 2 ||
+      !this.character.inAir
+    ) {
+      this.character.setAccelerationY(0)
+    }
   }
 }
 
