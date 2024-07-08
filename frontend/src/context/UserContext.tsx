@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useState } from 'react'
 
-import logger from '../utils/logger'
+import logger from '../logger/logger'
 
 export interface UserContextValue {
   login: (username: string, email: string) => void

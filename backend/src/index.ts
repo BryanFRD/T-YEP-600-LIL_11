@@ -1,16 +1,16 @@
 import express from 'express';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
 
 import logger from './logger/logger';
+import getEnvValue from './utils/environment';
 
-dotenv.config();
+const PORT_STRING: string | undefined = getEnvValue('API_PORT');
 
-if (!process.env.PORT) {
+if (!PORT_STRING) {
   process.exit(1);
 }
 
-const PORT: number = parseInt(process.env.PORT as string, 10);
+const PORT: number = parseInt(PORT_STRING, 10);
 
 const app = express();
 

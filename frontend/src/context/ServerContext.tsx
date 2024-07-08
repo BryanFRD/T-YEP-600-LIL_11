@@ -3,7 +3,7 @@ import { createContext, PropsWithChildren, useEffect, useState } from 'react'
 
 import ServerEvent from '../enum/ServerEvent'
 import getEnvValue from '../utils/environment'
-import logger from '../utils/logger'
+import logger from '../logger/logger'
 
 export interface ServerContextValue {
   channel: ClientChannel | null
@@ -11,10 +11,10 @@ export interface ServerContextValue {
     event: T,
     handler: (payload: ServerEventPayloads[T]) => void
   ) => void
-  removeEventHandler: <T extends ServerEvent>(
-    event: T,
-    handler: (payload: ServerEventPayloads[T]) => void
-  ) => void
+  // removeEventHandler: <T extends ServerEvent>(
+  //   event: T,
+  //   handler: (payload: ServerEventPayloads[T]) => void
+  // ) => void
   emit: <T extends ServerEvent>(
     event: T,
     payload: ServerEventPayloads[T]
@@ -24,17 +24,12 @@ export interface ServerContextValue {
 const initialContextValue: ServerContextValue = {
   channel: null,
   addEventHandler: () => {},
-  removeEventHandler: () => {},
+  // removeEventHandler: () => {},
   emit: () => {}
 }
 
-type ServerEventHandlers = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key in ServerEvent]?: ((payload: any) => void)[]
-}
-
-type ServerEventPayloads = {
-  [ServerEvent.ROOMS]: void // Exemple: pas de payload pour l'événement 'rooms'
+interface ServerEventPayloads {
+  [ServerEvent.ROOMS]: { limit: number, search?: string }
   [ServerEvent.JOIN_ROOM]: { roomId: string }
   [ServerEvent.LEAVE_ROOM]: { roomId: string }
   [ServerEvent.CREATE_ROOM]: { roomName: string }
@@ -57,6 +52,10 @@ type ServerEventPayloads = {
   }
 }
 
+type ServerEventHandlers = {
+  [key in ServerEvent]?: ((payload: ServerEventPayloads[key]) => void)[]
+}
+
 const ServerContext = createContext<ServerContextValue>(initialContextValue)
 
 export const ServerContextProvider: React.FC<PropsWithChildren> = ({
@@ -64,42 +63,52 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
 }) => {
   const [channel, setChannel] = useState<ClientChannel | null>(null)
   // const { user } = useContext(UserContext);
-  const eventHandlers: ServerEventHandlers = {}
+  const [eventHandlers, setEventHandlers] = useState<ServerEventHandlers>({});
 
   const addEventHandler = <T extends ServerEvent>(
     event: T,
     handler: (payload: ServerEventPayloads[T]) => void
   ) => {
-    if (!eventHandlers[event]) {
-      eventHandlers[event] = []
-    }
-    eventHandlers[event]?.push(handler)
+    setEventHandlers(previousEventHandlers => {
+      if(!previousEventHandlers[event])
+        previousEventHandlers[event] = [];
+      
+      previousEventHandlers[event]?.push(handler);
+      
+      return {...previousEventHandlers};
+    });
   }
-
+  
   const removeEventHandler = <T extends ServerEvent>(
     event: T,
     handler: (payload: ServerEventPayloads[T]) => void
   ) => {
-    if (eventHandlers[event]) {
-      eventHandlers[event] = eventHandlers[event]?.filter(h => h !== handler)
-    }
+    setEventHandlers(previousEventHandlers => {
+      if(!previousEventHandlers[event])
+        return previousEventHandlers;
+      
+      const index = previousEventHandlers[event]?.indexOf(handler);
+      previousEventHandlers[event]?.splice(index!, 1);
+      
+      return {...previousEventHandlers}
+    });
   }
 
   const emit = <T extends ServerEvent>(
     event: T,
-    payload: ServerEventPayloads[T]
+    data: ServerEventPayloads[T]
   ) => {
     if (channel) {
-      channel.emit(event, payload as never)
+      channel.emit(event, data)
     }
   }
 
   const handleEvent = <T extends ServerEvent>(
     event: T,
-    payload: ServerEventPayloads[T]
+    data: ServerEventPayloads[T]
   ) => {
     if (eventHandlers[event]) {
-      eventHandlers[event]?.forEach(handler => handler(payload))
+      eventHandlers[event]?.forEach(handler => handler(data))
     }
   }
 
@@ -132,7 +141,7 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
 
       Object.values(ServerEvent).forEach(event => {
         client.on(event, payload => {
-          handleEvent(event, payload as never)
+          handleEvent(event, payload as ServerEventPayloads[typeof event])
         })
       })
     })
@@ -162,7 +171,7 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
 
   return (
     <ServerContext.Provider
-      value={{ channel, addEventHandler, removeEventHandler, emit }}
+      value={{ channel, addEventHandler, emit }}
     >
       {children}
     </ServerContext.Provider>
