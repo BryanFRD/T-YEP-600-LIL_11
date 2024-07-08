@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import { useEffect, useRef } from 'react'
 
-import Scene from './scenes/scene'
+import config from './config'
 
 const PhaserGame = () => {
   const gameRef = useRef(null)
@@ -13,29 +13,7 @@ const PhaserGame = () => {
       return
     }
 
-    const config = {
-      type: Phaser.WEBGL,
-      width: window.innerWidth,
-      height: window.innerHeight,
-      fps: {
-        target: 60,
-        forceSetTimeOut: true
-      },
-      powerPreference: 'high-performance',
-      scene: Scene(),
-      physics: {
-        default: 'arcade',
-        arcade: {
-          gravity: {
-            y: 50,
-            x: 0
-          },
-          debug: true
-        }
-      }
-    }
-
-    const game = new Phaser.Game(config)
+    const game = new Phaser.Game({ ...config.game })
     gameInstanceRef.current = game
 
     return () => {
