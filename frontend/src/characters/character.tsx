@@ -70,6 +70,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, characterName)
 
     scene.physics.world.enableBody(this)
+    scene.physics.world.enableBody(this)
 
     if (!this.body) {
       throw new Error('Invalid character name')
@@ -91,7 +92,12 @@ class Character extends Phaser.Physics.Arcade.Sprite {
 
     // Create a new graphics object to represent the health bar
     this.healthBar = this.scene.add.graphics()
+    // Create a new graphics object to represent the health bar
+    this.healthBar = this.scene.add.graphics()
 
+    // Set the position of the health bar to the bottom of the sprite character
+    this.healthBar.x = this.x - this.width / 2
+    this.healthBar.y = this.y + this.height / 2
     // Set the position of the health bar to the bottom of the sprite character
     this.healthBar.x = this.x - this.width / 2
     this.healthBar.y = this.y + this.height / 2
