@@ -1,4 +1,4 @@
-import { abs, ConstantNode } from 'mathjs'
+import { abs } from 'mathjs'
 
 import Character, { ICharacter } from './character'
 
