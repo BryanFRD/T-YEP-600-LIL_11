@@ -11,10 +11,10 @@ export interface ServerContextValue {
     event: T,
     handler: (payload: ServerEventPayloads[T]) => void
   ) => void
-  // removeEventHandler: <T extends ServerEvent>(
-  //   event: T,
-  //   handler: (payload: ServerEventPayloads[T]) => void
-  // ) => void
+  removeEventHandler: <T extends ServerEvent>(
+    event: T,
+    handler: (payload: ServerEventPayloads[T]) => void
+  ) => void
   emit: <T extends ServerEvent>(
     event: T,
     payload: ServerEventPayloads[T]
@@ -24,7 +24,7 @@ export interface ServerContextValue {
 const initialContextValue: ServerContextValue = {
   channel: null,
   addEventHandler: () => {},
-  // removeEventHandler: () => {},
+  removeEventHandler: () => {},
   emit: () => {}
 }
 
@@ -159,19 +159,19 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
     addEventHandler(ServerEvent.PONG, pongHandler)
 
     return () => {
-      if (client) {
-        client.close()
+      if (channel) {
+        channel?.close()
+      }
 
         clearInterval(pingIntervale)
         removeEventHandler(ServerEvent.PONG, pongHandler)
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <ServerContext.Provider
-      value={{ channel, addEventHandler, emit }}
+      value={{ channel, addEventHandler, removeEventHandler, emit }}
     >
       {children}
     </ServerContext.Provider>

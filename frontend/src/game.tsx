@@ -2,7 +2,6 @@ import Phaser from 'phaser'
 import { useEffect, useRef } from 'react'
 
 import config from './config'
-import Scene from './scenes/scene'
 import logger from './logger/logger'
 
 const PhaserGame = () => {

@@ -1,30 +1,27 @@
-import { isBoolean } from 'mathjs';
-import getEnvValue from '../utils/environment';
-import { createLogger, format, transports } from 'winston';
+import log from 'loglevel'
 
-const logger = createLogger({
-  transports: [
-    new transports.File({
-      dirname: 'logs',
-      filename: 'error.log',
-      level: 'error',
-      format: format.combine(format.timestamp(), format.json()),
-    }),
-    new transports.File({
-      dirname: 'logs',
-      filename: 'info.log',
-      level: 'info',
-      format: format.combine(format.timestamp(), format.json()),
-    }),
-  ],
-});
-
-if (isBoolean(!getEnvValue('PROD', 'false'))) {
-  logger.add(
-    new transports.Console({
-      format: format.combine(format.timestamp(), format.simple()),
-    }),
-  );
+const getCallerInfo = () => {
+  const stack = new Error().stack
+  const stackLines = stack?.split('\n')
+  const callerLine = stackLines?.[3]
+  const match =
+    callerLine?.match(/at (.*?) \((.*?)\)/) || callerLine?.match(/at (.*?)$/)
+  return match ? match[1] : 'unknown'
 }
 
-export default logger;
+const logger = {
+  debug: (...message: unknown[]) => {
+    log.debug(`[${getCallerInfo()}]`, ...message)
+  },
+  info: (...message: unknown[]) => {
+    log.info(`[${getCallerInfo()}]`, ...message)
+  },
+  warn: (...message: unknown[]) => {
+    log.warn(`[${getCallerInfo()}]`, ...message)
+  },
+  error: (...message: unknown[]) => {
+    log.error(`[${getCallerInfo()}]`, ...message)
+  }
+}
+
+export default logger

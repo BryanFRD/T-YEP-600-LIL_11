@@ -1,7 +1,8 @@
-import SigninPage from './components/Auth/signinPage'
+import PhaserGame from './game'
 
 function App() {
-  return <SigninPage />
+  // return <SigninPage />
+  return <PhaserGame />
 }
 
 export default App
