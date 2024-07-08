@@ -1,7 +1,5 @@
-import * as dotenv from 'dotenv';
+import getEnvValue from '../utils/environment';
 import { createLogger, format, transports } from 'winston';
-
-dotenv.config();
 
 const logger = createLogger({
   transports: [
@@ -20,7 +18,7 @@ const logger = createLogger({
   ],
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (getEnvValue('NODE_ENV') !== 'production') {
   logger.add(
     new transports.Console({
       format: format.combine(format.timestamp(), format.simple()),
