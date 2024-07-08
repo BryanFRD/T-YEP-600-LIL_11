@@ -5,8 +5,15 @@ import App from './App.tsx'
 
 import './index.css'
 
+import { ServerContextProvider } from './context/ServerContext.tsx'
+import { UserContextProvider } from './context/UserContext.tsx'
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <UserContextProvider>
+      <ServerContextProvider>
+        <App />
+      </ServerContextProvider>
+    </UserContextProvider>
   </React.StrictMode>
 )
