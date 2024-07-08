@@ -1,3 +1,4 @@
+import config from '../config.json'
 import Character from './character'
 
 class AttackManager {
@@ -31,30 +32,18 @@ class AttackManager {
     grabThrow: () => this.character.character.grabThrow()
   }
 
-  private functionCooldowns: { [key: string]: number } = {
-    light: 250,
-    heavy: 1000,
-    dash: 500,
-    airlight: 250,
-    airheavy: 1000,
-    airdash: 500,
-    walljump: 250,
-    walldash: 1000,
-    grabThrow: 500,
-    special: 1000
-  }
-  private functionTimers: { [key: string]: number } = {
-    light: 0,
-    heavy: 0,
-    dash: 0,
-    airlight: 0,
-    airheavy: 0,
-    airdash: 0,
-    walljump: 0,
-    walldash: 0,
-    grabThrow: 0,
-    special: 0
-  }
+  private functionCooldowns: { [key: string]: number } =
+    config.character.functionCooldowns
+
+  private functionTimers: { [key: string]: number } = Object.keys(
+    this.functionCooldowns
+  ).reduce(
+    (timers, key) => {
+      timers[key] = 0
+      return timers
+    },
+    {} as { [key: string]: number }
+  )
 
   constructor(private character: Character) {}
 
@@ -166,14 +155,6 @@ class AttackManager {
 
   getFunctionTimers(): { [key: string]: number } {
     return this.functionTimers
-  }
-
-  setFunctionCooldowns(cooldowns: { [key: string]: number }): void {
-    this.functionCooldowns = cooldowns
-  }
-
-  setFunctionTimers(timers: { [key: string]: number }): void {
-    this.functionTimers = timers
   }
 
   setComboTimer(timer: number): void {
