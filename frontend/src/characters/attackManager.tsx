@@ -1,7 +1,7 @@
 import Character from './character'
 
-class ComboManager {
-  public currentCombo: string[] = []
+class AttackManager {
+  private currentCombo: string[] = []
   private currentAttack: string | null = null
   private attackTimer: number = 0
   private attackDelay: number = 500 // milliseconds between each input for considering it as the same input
@@ -143,6 +143,54 @@ class ComboManager {
     this.currentCombo = []
     this.currentAttack = null
   }
+
+  getCombo(): string[] {
+    return this.currentCombo
+  }
+
+  getAttack(): string | null {
+    return this.currentAttack
+  }
+
+  getComboTimer(): number {
+    return this.comboTimer
+  }
+
+  getAttackTimer(): number {
+    return this.attackTimer
+  }
+
+  getFunctionCooldowns(): { [key: string]: number } {
+    return this.functionCooldowns
+  }
+
+  getFunctionTimers(): { [key: string]: number } {
+    return this.functionTimers
+  }
+
+  setFunctionCooldowns(cooldowns: { [key: string]: number }): void {
+    this.functionCooldowns = cooldowns
+  }
+
+  setFunctionTimers(timers: { [key: string]: number }): void {
+    this.functionTimers = timers
+  }
+
+  setComboTimer(timer: number): void {
+    this.comboTimer = timer
+  }
+
+  setAttackTimer(timer: number): void {
+    this.attackTimer = timer
+  }
+
+  setCombo(combo: string[]): void {
+    this.currentCombo = combo
+  }
+
+  setAttack(attack: string): void {
+    this.currentAttack = attack
+  }
 }
 
-export default ComboManager
+export default AttackManager

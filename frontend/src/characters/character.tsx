@@ -3,7 +3,7 @@
 import Phaser from 'phaser'
 
 import Weapon from '../weapons/weapon'
-import ComboManager from './comboManager'
+import AttackManager from './attackManager'
 import Mage from './mage'
 import Warrior from './warrior'
 
@@ -46,7 +46,7 @@ export interface ICharacter {
 class Character extends Phaser.Physics.Arcade.Sprite {
   character: CharacterObject
   weapon: Weapon | null
-  comboManager: ComboManager
+  comboManager: AttackManager
 
   text: Phaser.GameObjects.Text
   healthBar: Phaser.GameObjects.Graphics
@@ -83,7 +83,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this)
 
     this.character = this.getCharacter(characterName)
-    this.comboManager = new ComboManager(this)
+    this.comboManager = new AttackManager(this)
 
     this.text = this.scene.add.text(0, 0, characterName, { color: '#0f0' })
     this.text.setOrigin(0.5) // set the origin of the text object to the center
