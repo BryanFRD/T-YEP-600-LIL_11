@@ -7,8 +7,6 @@ services:
       - "3010:3000"
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5442/db-raptor
-      - PORT=8000
-      - NODE_ENV=development
   
   frontend:
     build:
