@@ -14,12 +14,12 @@
     "pre-commit": "npm install && npm run typecheck && npm run format && npm run format:check && npm run lint"
   },
   "dependencies": {
-    "@ianvs/prettier-plugin-sort-imports": https://github.com/EpitechMscProPromo2026/T-YEP-600-LIL_11/pull/12/conflict?name=frontend%252Fpackage.json&ancestor_oid=17318f82909305fbd69f659516309dd56d517f3a&base_oid=d15d469a389aac90d9fd7d0d4bfa906b30e035ef&head_oid=f68095ab44061359363c020edc093651e232c71d"^4.2.1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
     "mathjs": "^13.0.0",
     "phaser": "^3.80.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.24.0"
+    "react-router-dom": "^6.24.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
