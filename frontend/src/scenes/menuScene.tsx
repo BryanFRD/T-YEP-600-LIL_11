@@ -7,13 +7,13 @@ class MenuScene extends Phaser.Scene implements IScene {
     super('menu')
   }
 
-  preload() {
-    this.load.image('newGameButton', 'path/to/newGameButton.png')
-    this.load.image('continueButton', 'path/to/continueButton.png')
-    this.load.image('saveButton', 'path/to/saveButton.png')
-    this.load.image('optionsButton', 'path/to/optionsButton.png')
-    this.load.image('quitButton', 'path/to/quitButton.png')
-  }
+    preload() {
+        this.load.image('newGameButton', 'path/to/newGameButton.png')
+        this.load.image('continueButton', 'path/to/continueButton.png')
+        this.load.image('saveButton', 'path/to/saveButton.png')
+        this.load.image('optionsButton', 'path/to/optionsButton.png')
+        this.load.image('quitButton', 'path/to/quitButton.png')
+    }
 
   create() {
     this.add
@@ -99,4 +99,4 @@ class MenuScene extends Phaser.Scene implements IScene {
   }
 }
 
-export default MenuScene
+export default MenuScene;
