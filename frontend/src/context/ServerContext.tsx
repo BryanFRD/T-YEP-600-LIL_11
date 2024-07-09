@@ -18,14 +18,16 @@ export interface ServerContextValue {
   emit: <T extends ServerEvent>(
     event: T,
     payload: ServerEventPayloads[T]
-  ) => void
+  ) => void,
+  ping: number
 }
 
 const initialContextValue: ServerContextValue = {
   channel: null,
   addEventHandler: () => {},
   removeEventHandler: () => {},
-  emit: () => {}
+  emit: () => {},
+  ping: -1
 }
 
 interface ServerEventPayloads {
@@ -64,6 +66,7 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
   const [channel, setChannel] = useState<ClientChannel | null>(null)
   // const { user } = useContext(UserContext);
   const [eventHandlers, setEventHandlers] = useState<ServerEventHandlers>({});
+  const [ping, setPing] = useState<number>(-1);
 
   const addEventHandler = <T extends ServerEvent>(
     event: T,
@@ -153,7 +156,7 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
     const pongHandler = (payload: ServerEventPayloads[ServerEvent.PONG]) => {
       const latency = Date.now() - payload.date
 
-      logger.info('Latency:', latency)
+      setPing(latency)
     }
 
     addEventHandler(ServerEvent.PONG, pongHandler)
@@ -163,15 +166,18 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
         channel?.close()
       }
 
-        clearInterval(pingIntervale)
-        removeEventHandler(ServerEvent.PONG, pongHandler)
+      clearInterval(pingIntervale)
+      removeEventHandler(ServerEvent.PONG, pongHandler)
+      
+      setChannel(null)
+      setPing(-1)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <ServerContext.Provider
-      value={{ channel, addEventHandler, removeEventHandler, emit }}
+      value={{ channel, addEventHandler, removeEventHandler, emit, ping }}
     >
       {children}
     </ServerContext.Provider>
