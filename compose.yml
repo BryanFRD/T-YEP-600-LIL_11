@@ -28,7 +28,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_DB: db-raptor
     ports:
       - "5432:5432"
     volumes:
@@ -40,6 +40,11 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
     
 volumes:
   postgres_data:

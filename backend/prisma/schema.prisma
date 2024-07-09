@@ -16,7 +16,7 @@ datasource db {
 model Player {
   id        String      @id @default(cuid())
   email     String      @unique 
-  name      String?
+  name      String? 
   firstname String?
   password  String? 
   username  String?     @unique
