@@ -9,7 +9,9 @@ type ConfigKey =
   | 'POSTGRES_PORT'
   | 'POSTGRES_USER'
   | 'POSTGRES_PASSWORD'
-  | 'POSTGRES_DB';
+  | 'POSTGRES_DB'
+  | 'DATABASE_URL'
+  | 'JWT_TOKEN';
 
 const getEnvValue = (
   key: ConfigKey,
