@@ -1,18 +1,22 @@
 import { geckos, iceServers } from '@geckos.io/server';
 import http from 'http';
 import getEnvValue from './utils/environment.mjs';
+import express from 'express';
 
-const server = http.createServer();
+const app = express()
+const server = http.createServer(app);
 const io = geckos({
   iceServers
 });
+
+console.log('iceServers:', iceServers);
 
 const PORT = getEnvValue('SERVER_PORT');
 
 io.addServer(server);
 
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.get('/', (req, res) => {
+  res.send('Hello World!');
 });
 
 io.onConnection(channel => {
@@ -25,3 +29,9 @@ io.onConnection(channel => {
     channel.emit('pong', data);
   });
 });
+
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+console.log('iceServers 2:', iceServers);
