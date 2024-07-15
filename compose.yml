@@ -23,6 +23,13 @@ services:
       - "5349:5349"
       - "5349:5349/udp"
   
+  server:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "9208:9208"
+  
   database:
     image: postgres:16.3
     environment:

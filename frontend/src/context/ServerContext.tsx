@@ -137,18 +137,28 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
       }
 
       setChannel(client)
-
       logger.info('Connected to the server')
-
-      emit(ServerEvent.PING, { date: Date.now() })
-
-      Object.values(ServerEvent).forEach(event => {
-        client.on(event, payload => {
-          handleEvent(event, payload as ServerEventPayloads[typeof event])
-        })
-      })
     })
 
+    return () => {
+      logger.info('Disconnected from the server')
+    }
+  }, [])
+  
+  useEffect(() => {
+    if(channel === null){
+      return
+    }
+    
+    
+    emit(ServerEvent.PING, { date: Date.now() })
+
+    Object.values(ServerEvent).forEach(event => {
+      channel.on(event, payload => {
+        handleEvent(event, payload as ServerEventPayloads[typeof event])
+      })
+    })
+    
     const pingIntervale = setInterval(() => {
       emit(ServerEvent.PING, { date: Date.now() })
     }, 1000)
@@ -160,20 +170,15 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
     }
 
     addEventHandler(ServerEvent.PONG, pongHandler)
-
+    
     return () => {
-      if (channel) {
-        channel?.close()
-      }
-
       clearInterval(pingIntervale)
       removeEventHandler(ServerEvent.PONG, pongHandler)
       
-      setChannel(null)
       setPing(-1)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [channel])
 
   return (
     <ServerContext.Provider
