@@ -3,28 +3,22 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 type ConfigKey =
-  'NODE_ENV'
+  | 'NODE_ENV'
   | 'API_PORT'
   | 'POSTGRES_HOST'
   | 'POSTGRES_PORT'
   | 'POSTGRES_USER'
   | 'POSTGRES_PASSWORD'
   | 'POSTGRES_DB'
-  
+  | 'DATABASE_URL'
+  | 'JWT_TOKEN';
 
 const getEnvValue = (
   key: ConfigKey,
-  defaultValue?: string
+  defaultValue?: string,
 ): string | undefined => {
-  const value = get(key)
-  if (!value) {
-    return defaultValue ?? undefined
-  }
-  return value
-}
+  const value = process.env[key];
+  return value ?? defaultValue;
+};
 
-const get = (key: string): string | undefined => {
-  return process.env[key];
-}
-
-export default getEnvValue
+export default getEnvValue;
