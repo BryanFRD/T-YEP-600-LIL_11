@@ -8,78 +8,47 @@ class MenuScene extends Phaser.Scene implements IScene {
   }
 
   preload() {
-    this.load.image('newGameButton', 'path/to/newGameButton.png')
-    this.load.image('continueButton', 'path/to/continueButton.png')
-    this.load.image('saveButton', 'path/to/saveButton.png')
-    this.load.image('optionsButton', 'path/to/optionsButton.png')
-    this.load.image('quitButton', 'path/to/quitButton.png')
+    this.load.image('newGameButton', '../../public/assets/images/newGame.png')
+    this.load.image(
+      'continueButton',
+      '../../public/assets/images/continueGame.png'
+    )
+    this.load.image('saveButton', '../../public/assets/images/saveGame.png')
+    this.load.image('optionsButton', '../../public/assets/images/options.png')
+    this.load.image('quitButton', '../../public/assets/images/quit.png')
   }
 
   create() {
     this.add
-      .image(400, 100, 'newGameButton')
+      .image(600, 100, 'newGameButton')
       .setInteractive()
       .on('pointerdown', () => {
         this.scene.start('NewGameScene')
       })
 
     this.add
-      .image(400, 200, 'continueButton')
+      .image(600, 200, 'continueButton')
       .setInteractive()
       .on('pointerdown', () => {
         this.scene.start('ContinueGameScene')
       })
 
     this.add
-      .image(400, 300, 'saveButton')
+      .image(600, 300, 'saveButton')
       .setInteractive()
       .on('pointerdown', () => {
         this.scene.start('SaveGameScene')
       })
 
     this.add
-      .image(400, 400, 'optionsButton')
+      .image(600, 400, 'optionsButton')
       .setInteractive()
       .on('pointerdown', () => {
         this.scene.start('OptionsScene')
       })
 
     this.add
-      .image(400, 500, 'quitButton')
-      .setInteractive()
-      .on('pointerdown', () => {
-        this.quitGame()
-      })
-    this.add
-      .image(400, 100, 'newGameButton')
-      .setInteractive()
-      .on('pointerdown', () => {
-        this.scene.start('NewGameScene')
-      })
-
-    this.add
-      .image(400, 200, 'continueButton')
-      .setInteractive()
-      .on('pointerdown', () => {
-        this.scene.start('ContinueGameScene')
-      })
-
-    this.add
-      .image(400, 300, 'saveButton')
-      .setInteractive()
-      .on('pointerdown', () => {
-        this.scene.start('SaveGameScene')
-      })
-
-    this.add
-      .image(400, 400, 'optionsButton')
-      .setInteractive()
-      .on('pointerdown', () => {
-        this.scene.start('OptionsScene')
-      })
-
-    this.add
-      .image(400, 500, 'quitButton')
+      .image(600, 500, 'quitButton')
       .setInteractive()
       .on('pointerdown', () => {
         this.quitGame()

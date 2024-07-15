@@ -1,1 +1,10 @@
 node_modules
+deploy.sh
+compose.override.yml
+
+# all environment files
+
+./backend/.env
+./frontend/.env
+./server/.env
+./.env

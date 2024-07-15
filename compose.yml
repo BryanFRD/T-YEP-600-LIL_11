@@ -4,15 +4,19 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "3010:3000"
-  
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "5183:4173"
-  
+      - "4173:4173"
+    env_file:
+      - ./frontend/.env
+      
   iceserver:
     build: 
       context: ./iceserver
@@ -23,14 +27,23 @@ services:
       - "5349:5349"
       - "5349:5349/udp"
   
+  server:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "9208:9208"
+    env_file:
+      - ./server/.env
+  
   database:
     image: postgres:16.3
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_DB: db-raptor
     ports:
-      - "5442:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
   
@@ -40,6 +53,11 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
     
 volumes:
   postgres_data:
