@@ -1,4 +1,3 @@
-import logger from '../logger/logger'
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -19,9 +18,6 @@ const getEnvValue = (
 ): string | undefined => {
   const value = get(key)
   if (!value) {
-    logger.error(
-      `Missing environment variable ${key}, please check your .env file`
-    )
     return defaultValue ?? undefined
   }
   return value
