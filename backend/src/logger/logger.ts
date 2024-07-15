@@ -1,5 +1,6 @@
-import getEnvValue from '../utils/environment';
 import { createLogger, format, transports } from 'winston';
+
+import getEnvValue from '../utils/environment';
 
 const logger = createLogger({
   transports: [
