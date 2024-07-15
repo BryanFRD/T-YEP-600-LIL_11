@@ -47,7 +47,7 @@ class AttackManager {
 
   constructor(private character: Character) {}
 
-  public update(time: number, delta: number): void {
+  public update(_time: number, delta: number): void {
     // Update the combo timer and the attack timers
     this.comboTimer -= delta
     this.attackTimer -= delta

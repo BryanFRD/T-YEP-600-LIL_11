@@ -51,7 +51,7 @@ class Mage implements ICharacter {
 
     this.actualAttack = null
   }
-  grabThrow(target?: Character): void {
+  grabThrow(_target?: Character): void {
     if (this.character.weapon && this.character.body) {
       // eject wweapon
       this.character.weapon.character = null
@@ -229,7 +229,7 @@ class Mage implements ICharacter {
     this.actualAttack = null
   }
 
-  update(time: number, delta: number): void {
+  update(_time: number, _delta: number): void {
     if (!this.character.body) {
       throw new Error('Invalid character name')
     }

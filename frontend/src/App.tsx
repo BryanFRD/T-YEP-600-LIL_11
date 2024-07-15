@@ -1,7 +1,7 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-import SigninPage from './components/Auth/signinPage'
 import LoginPage from './components/Auth/loginPage'
+import SigninPage from './components/Auth/signinPage'
 import PhaserGame from './game'
 
 const router = createBrowserRouter([

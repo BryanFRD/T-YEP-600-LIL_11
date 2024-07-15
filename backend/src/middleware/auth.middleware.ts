@@ -1,9 +1,10 @@
-import { NextFunction, Response, Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import jwt, { Secret } from 'jsonwebtoken';
+
 import HttpCode from '../utils/http.code';
 
 interface CustomRequest extends Request {
-  player?: any; 
+  player?: any;
 }
 
 export const authenticateToken = (

@@ -56,7 +56,7 @@ class ControllerManager {
     this.handleInput()
   }
 
-  update(time: number, delta: number) {
+  update(_time: number, _delta: number) {
     Object.entries(this.keyStatus).forEach(([key, status]) => {
       if (status) {
         this.character.controlerInput(key)
