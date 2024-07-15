@@ -8,6 +8,6 @@
     "forceConsistentCasingInFileNames": true, // Assure que la casse des noms de fichiers est cohérente
     "outDir": "./dist" // Redirige la sortie des fichiers .js
   },
-  "include": ["src/**/*"], // Spécifie un tableau de noms de fichiers à inclure dans le programme
+  "include": ["src/**/*", "src"], // Spécifie un tableau de noms de fichiers à inclure dans le programme
   "exclude": ["node_modules", "**/*.spec.ts"] // Exclut les fichiers ou dossiers spécifiés
 }

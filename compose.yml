@@ -4,15 +4,15 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "3010:3000"
+      - "3000:3000"
   
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "5183:4173"
-  
+      - "4173:4173"
+      
   iceserver:
     build: 
       context: ./iceserver
@@ -28,9 +28,9 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_DB: db-raptor
     ports:
-      - "5442:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
   
@@ -40,6 +40,11 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
     
 volumes:
   postgres_data:

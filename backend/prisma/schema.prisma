@@ -14,57 +14,63 @@ datasource db {
 }
 
 model Player {
-  id        String      @id @default(cuid())
-  email     String      @unique 
-  name      String?
-  firstname String?
-  password  String? 
-  username  String?     @unique
-  lastConnection DateTime?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  deletedAt DateTime?
-  games     PlayerGame[]
-  stats     PlayerStats? @relation(name: "PlayerStats", fields: [id], references: [playerId])
+  id              String        @id @default(cuid())
+  email           String        @unique 
+  name            String
+  firstname       String
+  password        String 
+  username        String        @unique
+  lastConnection  DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  deletedAt       DateTime?
+  games           PlayerGame[] 
+  stats           PlayerStats?
 
   @@map("players")
 }
 
 model Game {
-  id         String      @id @default(cuid())
-  finishedAt DateTime?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  deletedAt  DateTime?
-  players    PlayerGame[]
+  id          String      @id @default(cuid())
+  finishedAt  DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+  players     PlayerGame[]
+
+  @@map("games")
 }
 
 model PlayerGame {
   id         String   @id @default(cuid())
-  playerId   String
+  playerId   String 
   gameId     String
-  team       String
-  countDeath Int
+  team       String   
+  countDeath Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   deletedAt  DateTime?
 
   player Player @relation(fields: [playerId], references: [id])
   game   Game   @relation(fields: [gameId], references: [id])
+
+  @@map("players_games")
 }
 
 model PlayerStats {
-  id         String   @id @default(cuid())
-  playerId   String   @unique
-  countKill  Int
-  countDeath Int
-  countAssist Int
-  countWin   Int
-  countLose  Int
-  countDraw  Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  deletedAt  DateTime?
+  id          String   @id @default(cuid())
+  playerId    String   @unique
+  countKill   Int      @default(0)
+  countDeath  Int      @default(0)
+  countAssist Int      @default(0)
+  countWin    Int      @default(0)
+  countLose   Int      @default(0)
+  countDraw   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
 
-  player Player? @relation(name: "PlayerStats")
+  player Player @relation(fields: [playerId], references: [id])
+
+  @@map("players_stats")
 }
