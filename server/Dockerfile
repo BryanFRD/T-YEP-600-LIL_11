@@ -10,6 +10,4 @@ COPY . .
 
 EXPOSE 9208
 
-RUN npm run build
-
-CMD ["npm", "start"]
+CMD ["npm", "run", "start"]
