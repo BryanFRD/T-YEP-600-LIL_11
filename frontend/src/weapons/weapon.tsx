@@ -81,8 +81,7 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
         .filter(
           child => child instanceof Character && child !== this.character
         ),
-      (weapon, character) => {
-        const weaponObject = weapon as Weapon
+      (_weapon, character) => {
         const characterObject = character as Character
 
         this.character?.comboManager.checkAttack(characterObject)

@@ -1,4 +1,4 @@
-import { abs, ConstantNode, typeOf } from 'mathjs'
+import { abs } from 'mathjs'
 
 import Weapon from '../weapons/weapon'
 import Character, { ICharacter } from './character'
@@ -201,7 +201,7 @@ class Mage implements ICharacter {
     this.character.setAccelerationY(this.speed * 10)
   }
 
-  update(time: number, delta: number): void {
+  update(_time: number, _delta: number): void {
     if (!this.character.body) {
       throw new Error('Invalid character name')
     }

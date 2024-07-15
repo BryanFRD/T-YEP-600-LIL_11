@@ -2,8 +2,8 @@ import { ClientChannel, geckos } from '@geckos.io/client'
 import { createContext, PropsWithChildren, useEffect, useState } from 'react'
 
 import ServerEvent from '../enum/ServerEvent'
-import getEnvValue from '../utils/environment'
 import logger from '../logger/logger'
+import getEnvValue from '../utils/environment'
 
 export interface ServerContextValue {
   channel: ClientChannel | null
@@ -18,7 +18,7 @@ export interface ServerContextValue {
   emit: <T extends ServerEvent>(
     event: T,
     payload: ServerEventPayloads[T]
-  ) => void,
+  ) => void
   ping: number
 }
 
@@ -31,7 +31,7 @@ const initialContextValue: ServerContextValue = {
 }
 
 interface ServerEventPayloads {
-  [ServerEvent.ROOMS]: { limit: number, search?: string }
+  [ServerEvent.ROOMS]: { limit: number; search?: string }
   [ServerEvent.JOIN_ROOM]: { roomId: string }
   [ServerEvent.LEAVE_ROOM]: { roomId: string }
   [ServerEvent.CREATE_ROOM]: { roomName: string }
@@ -65,36 +65,34 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
 }) => {
   const [channel, setChannel] = useState<ClientChannel | null>(null)
   // const { user } = useContext(UserContext);
-  const [eventHandlers, setEventHandlers] = useState<ServerEventHandlers>({});
-  const [ping, setPing] = useState<number>(-1);
+  const [eventHandlers, setEventHandlers] = useState<ServerEventHandlers>({})
+  const [ping, setPing] = useState<number>(-1)
 
   const addEventHandler = <T extends ServerEvent>(
     event: T,
     handler: (payload: ServerEventPayloads[T]) => void
   ) => {
     setEventHandlers(previousEventHandlers => {
-      if(!previousEventHandlers[event])
-        previousEventHandlers[event] = [];
-      
-      previousEventHandlers[event]?.push(handler);
-      
-      return {...previousEventHandlers};
-    });
+      if (!previousEventHandlers[event]) previousEventHandlers[event] = []
+
+      previousEventHandlers[event]?.push(handler)
+
+      return { ...previousEventHandlers }
+    })
   }
-  
+
   const removeEventHandler = <T extends ServerEvent>(
     event: T,
     handler: (payload: ServerEventPayloads[T]) => void
   ) => {
     setEventHandlers(previousEventHandlers => {
-      if(!previousEventHandlers[event])
-        return previousEventHandlers;
-      
-      const index = previousEventHandlers[event]?.indexOf(handler);
-      previousEventHandlers[event]?.splice(index!, 1);
-      
-      return {...previousEventHandlers}
-    });
+      if (!previousEventHandlers[event]) return previousEventHandlers
+
+      const index = previousEventHandlers[event]?.indexOf(handler)
+      previousEventHandlers[event]?.splice(index!, 1)
+
+      return { ...previousEventHandlers }
+    })
   }
 
   const emit = <T extends ServerEvent>(
@@ -144,13 +142,12 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
       logger.info('Disconnected from the server')
     }
   }, [])
-  
+
   useEffect(() => {
-    if(channel === null){
+    if (channel === null) {
       return
     }
-    
-    
+
     emit(ServerEvent.PING, { date: Date.now() })
 
     Object.values(ServerEvent).forEach(event => {
@@ -158,7 +155,7 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
         handleEvent(event, payload as ServerEventPayloads[typeof event])
       })
     })
-    
+
     const pingIntervale = setInterval(() => {
       emit(ServerEvent.PING, { date: Date.now() })
     }, 1000)
@@ -170,14 +167,14 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
     }
 
     addEventHandler(ServerEvent.PONG, pongHandler)
-    
+
     return () => {
       clearInterval(pingIntervale)
       removeEventHandler(ServerEvent.PONG, pongHandler)
-      
+
       setPing(-1)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channel])
 
   return (
