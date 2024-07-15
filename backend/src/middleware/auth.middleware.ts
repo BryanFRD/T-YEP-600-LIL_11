@@ -1,9 +1,9 @@
 import { NextFunction, Response, Request } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { Secret } from 'jsonwebtoken';
 import HttpCode from '../utils/http.code';
 
 interface CustomRequest extends Request {
-  player?: any; // '?' indique que ce champ est optionnel pour éviter d'autres erreurs de typage
+  player?: any; 
 }
 
 export const authenticateToken = (
@@ -25,7 +25,7 @@ export const authenticateToken = (
 
   jwt.verify(
     token,
-    process.env.JWT_TOKEN as string,
+    process.env.JWT_TOKEN as Secret,
     (err: any, player: any) => {
       if (err) {
         return res.sendStatus(HttpCode.FORBIDDEN);

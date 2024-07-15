@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const jwtSecret = process.env.JWT_SECRET || 'jwtsecret';
+const jwtSecret = process.env.JWT_TOKEN || 'jwtsecret';
 const accessTokenExpiry = '15m';
 const refreshTokenExpiry = '7d';
 
