@@ -19,15 +19,12 @@ import {
 } from '../utils/api.response';
 import HttpCode from '../utils/http.code';
 import { handleJoiValidationError } from '../utils/joi';
-import { Controller, Post, Route } from 'tsoa';
 
-@Route('auth')
-class AuthController extends Controller {
+class AuthController {
   private authService: AuthImplementation;
   private redisService: RedisService;
 
   constructor() {
-    super();
     this.authService = new AuthImplementation();
     this.redisService = new RedisService();
     this.register = this.register.bind(this);
@@ -36,7 +33,6 @@ class AuthController extends Controller {
     this.logout = this.logout.bind(this);  
   }
 
-  @Post('register')
   async register(req: Request, res: Response) {
     try {
       const { error, value } = registerSchema.validate(req.body);
