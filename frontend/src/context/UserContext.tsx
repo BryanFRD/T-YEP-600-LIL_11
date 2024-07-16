@@ -1,10 +1,12 @@
-import { createContext, PropsWithChildren, useState } from 'react'
+import { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import logger from '../logger/logger'
+import ServerContext from './ServerContext'
+import ServerEvent from '../enum/ServerEvent'
 
 export interface UserContextValue {
-  login: (username: string, email: string) => void
-  register: (username: string, email: string) => void
+  login: (login: string, password: string) => void
+  register: (username: string, email: string, password: string) => void
   update: (user: Partial<User>) => void
   refresh: () => void
   disconnect: () => void
@@ -12,6 +14,7 @@ export interface UserContextValue {
 }
 
 export interface User {
+  token: string
   id: string
   username: string
   email: string
@@ -32,16 +35,18 @@ export const UserContextProvider: React.FC<PropsWithChildren> = ({
   children
 }) => {
   const [user, setUser] = useState<User | null>(null)
+  const {emit, addEventHandler, removeEventHandler} = useContext(ServerContext)
 
-  const login = (username: string, email: string) => {
-    logger.debug('login:', username, email)
-    // TODO: Faire une requête pour connecter l'utilisateur
-    setUser({ id: 'NULL', username, email })
+  const login = (login: string, password: string) => {
+    logger.debug('login:', login, password)
+    
+    emit(ServerEvent.CONNECT, {login, password})
   }
 
-  const register = (username: string, email: string) => {
-    logger.debug('register:', username, email)
-    // TODO: Faire une requête pour créer un nouvel utilisateur
+  const register = (username: string, email: string, password: string) => {
+    logger.debug('register:', username, email, password)
+    
+    emit(ServerEvent.REGISTER, {username, email, password})
   }
 
   const update = (user: Partial<User>) => {
@@ -60,8 +65,10 @@ export const UserContextProvider: React.FC<PropsWithChildren> = ({
 
   const disconnect = () => {
     logger.info('disconnect')
-    // TODO: Faire une requête pour déconnecter l'utilisateur
-    setUser(null)
+    
+    if(user !== null) {
+      emit(ServerEvent.DISCONNECT, { token: user.token })
+    }
   }
 
   return (

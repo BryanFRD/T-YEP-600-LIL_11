@@ -16,10 +16,10 @@ log.setLevel(logLevel as LogLevelDesc)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <UserContextProvider>
-      <ServerContextProvider>
+    <ServerContextProvider>
+      <UserContextProvider>
         <App />
-      </ServerContextProvider>
-    </UserContextProvider>
+      </UserContextProvider>
+    </ServerContextProvider>
   </React.StrictMode>
 )

@@ -37,21 +37,36 @@ interface ServerEventPayloads {
   [ServerEvent.CREATE_ROOM]: { roomName: string }
   [ServerEvent.DELETE_ROOM]: { roomId: string }
   [ServerEvent.PING]: { date: number }
-  [ServerEvent.PONG]: { date: number }
   [ServerEvent.PLAYER_MOVE]: {
     playerId: string
-    newPosition: { x: number; y: number }
-  }
-  [ServerEvent.PLAYER_MOVED]: {
-    playerId: string
-    newPosition: { x: number; y: number }
+    newPosition: { x: number; y: number, direction: string }
   }
   [ServerEvent.PLAYER_ATTACK]: { playerId: string; targetId: string }
-  [ServerEvent.PLAYER_ATTACKED]: {
+  [ServerEvent.REGISTER]: {
+    username: string
+    email: string
+    password: string
+  },
+  [ServerEvent.CONNECT]: {
+    login: string
+    password: string
+  },
+  [ServerEvent.DISCONNECT]: { token: string }
+  
+  // Response
+  [ServerEvent.PONG]: { date: number }
+  [ServerEvent.REGISTERED_RESPONSE]: { status: boolean }
+  [ServerEvent.CONNECTED_RESPONSE]: { status: boolean }
+  [ServerEvent.DISCONNECTED_RESPONSE]: { status: boolean }
+  [ServerEvent.ROOM_CREATED_RESPONSE]: { status: boolean, roomId: string }
+  [ServerEvent.ROOM_DELETED_RESPONSE]: { status: boolean, roomId: string }
+  [ServerEvent.ROOM_JOINED_RESPONSE]: { status: boolean, roomId: string }
+  [ServerEvent.ROOM_LEFT_RESPONSE]: { status:boolean, roomId: string }
+  [ServerEvent.PLAYER_MOVED_RESPONSE]: {
     playerId: string
-    attackerId: string
-    damage: number
+    newPosition: { x: number; y: number, direction: string }
   }
+  [ServerEvent.PLAYER_ATTACKED_RESPONSE]: { playerId: string; targetId: string }
 }
 
 type ServerEventHandlers = {
@@ -64,7 +79,6 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
   children
 }) => {
   const [channel, setChannel] = useState<ClientChannel | null>(null)
-  // const { user } = useContext(UserContext);
   const [eventHandlers, setEventHandlers] = useState<ServerEventHandlers>({})
   const [ping, setPing] = useState<number>(-1)
 
@@ -103,7 +117,7 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
       channel.emit(event, data)
     }
   }
-
+  
   const handleEvent = <T extends ServerEvent>(
     event: T,
     data: ServerEventPayloads[T]

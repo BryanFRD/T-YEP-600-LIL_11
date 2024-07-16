@@ -5,11 +5,23 @@ enum ServerEvent {
   CREATE_ROOM = 'create-room',
   DELETE_ROOM = 'delete-room',
   PING = 'ping',
-  PONG = 'pong',
   PLAYER_MOVE = 'player-move',
-  PLAYER_MOVED = 'player-moved',
   PLAYER_ATTACK = 'player-attack',
-  PLAYER_ATTACKED = 'player-attacked'
+  REGISTER = 'register',
+  CONNECT = 'connect',
+  DISCONNECT = 'disconnect',
+  
+  // RESPONSE
+  PONG = 'pong',
+  REGISTERED_RESPONSE = 'registered_response',
+  CONNECTED_RESPONSE = 'connected_response',
+  DISCONNECTED_RESPONSE = 'disconnected_response',
+  ROOM_CREATED_RESPONSE = 'room-created_response',
+  ROOM_DELETED_RESPONSE = 'room-deleted_response',
+  ROOM_JOINED_RESPONSE = 'room-joined_response',
+  ROOM_LEFT_RESPONSE = 'room-left_response',
+  PLAYER_MOVED_RESPONSE = 'player-moved_response',
+  PLAYER_ATTACKED_RESPONSE = 'player-attacked_response',
 }
 
 export default ServerEvent
