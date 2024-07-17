@@ -3,9 +3,12 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import logger from './logger/logger';
-import authRouter from './routes/auth.route';
-import playerRouter from './routes/player.route';
 import getEnvValue from './utils/environment';
+
+import swaggerUi from 'swagger-ui-express';
+import swaggerOutput from "./docs/swagger_output.json";
+import bodyParser from 'body-parser';
+import { routes } from './routes';
 
 const PORT_STRING: string | undefined = getEnvValue('API_PORT');
 
@@ -18,8 +21,9 @@ const PORT: number = parseInt(PORT_STRING, 10);
 const app = express();
 
 app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(express.static('public'));
 
 logger.info('🚀 Server is starting');
 
@@ -27,8 +31,9 @@ app.get('/', (req, res) => {
   res.send('Server is up and running');
 });
 
-app.use('/auth', authRouter);
-app.use('/players', playerRouter);
+app.use('/', routes);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
