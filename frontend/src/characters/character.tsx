@@ -124,6 +124,12 @@ class Character extends Phaser.Physics.Arcade.Sprite {
       this.inAir = false
     }
 
+    if (!this.inAir) {
+      this.setGravityY(0)
+    } else {
+      this.setGravityY(2000)
+    }
+
     // Update the character's
     this.character.update(time, delta)
     this.comboManager.update(time, delta)
@@ -137,7 +143,6 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     this.setVelocityY(
       this.body.velocity.y * Math.pow(decelerationFactor, delta / 1000)
     )
-
     // Update the position of the text object to ensure it stays at the center of the sprite
     this.text.x = this.x + (this.body.velocity.x * delta) / 1000
     this.text.y = this.y + (this.body.velocity.y * delta) / 1000
