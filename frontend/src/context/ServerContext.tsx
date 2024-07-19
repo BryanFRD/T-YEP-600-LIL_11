@@ -19,15 +19,19 @@ export interface ServerContextValue {
     event: T,
     payload: ServerEventPayloads[T]
   ) => void
-  ping: number
+  ping: number,
+  eventHandlers: ServerEventHandlers
 }
+
+const LA_VALEURE_PAR_DEFAUT_DU_PING_QUAND_IL_N_EST_PAS_ENCORE_INITIALISE = -1
 
 const initialContextValue: ServerContextValue = {
   channel: null,
   addEventHandler: () => {},
   removeEventHandler: () => {},
   emit: () => {},
-  ping: -1
+  ping: LA_VALEURE_PAR_DEFAUT_DU_PING_QUAND_IL_N_EST_PAS_ENCORE_INITIALISE,
+  eventHandlers: {}
 }
 
 interface ServerEventPayloads {
@@ -193,7 +197,7 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
 
   return (
     <ServerContext.Provider
-      value={{ channel, addEventHandler, removeEventHandler, emit, ping }}
+      value={{ channel, addEventHandler, removeEventHandler, emit, ping, eventHandlers }}
     >
       {children}
     </ServerContext.Provider>

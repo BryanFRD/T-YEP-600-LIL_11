@@ -4,6 +4,7 @@ import { useContext, useEffect, useRef } from 'react'
 import config from './config'
 import ServerContext from './context/ServerContext'
 import logger from './logger/logger'
+import UserContext from './context/UserContext'
 
 const PhaserGame = () => {
   const gameRef = useRef(null)
@@ -18,6 +19,8 @@ const PhaserGame = () => {
     }
 
     const game = new Phaser.Game({ ...config.game })
+    
+    
     gameInstanceRef.current = game
 
     return () => {
