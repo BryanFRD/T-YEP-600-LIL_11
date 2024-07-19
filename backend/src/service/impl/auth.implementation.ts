@@ -1,13 +1,11 @@
 import bcrypt from 'bcrypt';
 
-import { SuccessResponse } from '../../@types/api.response.type';
 import { LoginDTO, RegisterDTO } from '../../@types/auth.type';
 import { getPlayerDTO } from '../../@types/player.type';
 import InvalidPassword from '../../error/InvalidPassword';
 import UserNotFoundByIdentifier from '../../error/UserNotFoundByIdentifier';
 import { toPlayerDTO } from '../../mapper/player.mapper';
 import { db } from '../../utils/db.server';
-import HttpCode from '../../utils/http.code';
 import { hashPassword } from '../../utils/password.utils';
 import AuthService from '../auth.service';
 

@@ -8,3 +8,5 @@ compose.override.yml
 ./frontend/.env
 ./server/.env
 ./.env
+frontend/.env
+./iceserver/.env
