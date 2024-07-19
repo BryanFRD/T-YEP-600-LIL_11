@@ -1,10 +1,8 @@
 FROM coturn/coturn:latest
 
-COPY turnserver.conf /etc/turnserver.conf
+COPY --chmod=755 generate_turn_config.sh /usr/local/bin/generate_turn_config.sh
 
 EXPOSE 3478
-EXPOSE 3478/udp
 EXPOSE 5349
-EXPOSE 5349/udp
 
-CMD ["turnserver", "-c", "/etc/turnserver.conf"]
+CMD /usr/local/bin/generate_turn_config.sh && turnserver -c /etc/turnserver.conf
