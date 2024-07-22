@@ -67,7 +67,7 @@ class GameScene extends Phaser.Scene implements IScene {
 
     this.controllerManager = new ControllerManager(
       this,
-      new Character(this, randomInt(100, 700), randomInt(100, 500), 'mage')
+      new Character(this, randomInt(400, 1040), randomInt(0, 100), 'mage')
     )
 
     this.physics.add.collider(

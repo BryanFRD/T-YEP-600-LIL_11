@@ -78,15 +78,15 @@ export function EntitiesAndTileCollision(
   tilemapLayer: Phaser.Tilemaps.TilemapLayer
 ) {
   entities.forEach(entity => {
-    const character = entity as Character
-    const characterBounds = character.getBounds()
+    const entitie = entity as Character | Weapon
+    const entitieBounds = entitie.getBounds()
 
-    // Define character corners
-    const characterCorners: Point[] = [
-      { x: characterBounds.left, y: characterBounds.top },
-      { x: characterBounds.right, y: characterBounds.top },
-      { x: characterBounds.right, y: characterBounds.bottom },
-      { x: characterBounds.left, y: characterBounds.bottom }
+    // Define entitie corners
+    const entitieCorners: Point[] = [
+      { x: entitieBounds.left, y: entitieBounds.top },
+      { x: entitieBounds.right, y: entitieBounds.top },
+      { x: entitieBounds.right, y: entitieBounds.bottom },
+      { x: entitieBounds.left, y: entitieBounds.bottom }
     ]
 
     let inAir = true // Initialize inAir variable outside the loop
@@ -94,10 +94,10 @@ export function EntitiesAndTileCollision(
     tilemapLayer.forEachTile(tile => {
       if (tile.collides) {
         const tileBounds = new Phaser.Geom.Rectangle(
-          tile.pixelX * 3,
-          tile.pixelY * 3,
-          tile.width * 3,
-          tile.height * 3
+          tile.pixelX * tilemapLayer.scaleX,
+          tile.pixelY * tilemapLayer.scaleY,
+          tile.width * tilemapLayer.scaleX,
+          tile.height * tilemapLayer.scaleY
         )
 
         // Define tile corners
@@ -108,21 +108,21 @@ export function EntitiesAndTileCollision(
           { x: tileBounds.left, y: tileBounds.bottom }
         ]
 
-        // Check intersections between character segments and tile segments
+        // Check intersections between entitie segments and tile segments
         let intersectionPoint: Point | null = null
         for (let i = 0; i < 4; i++) {
           for (let j = 0; j < 4; j++) {
             if (
               segmentsIntersect(
-                characterCorners[i],
-                characterCorners[(i + 1) % 4],
+                entitieCorners[i],
+                entitieCorners[(i + 1) % 4],
                 tileCorners[j],
                 tileCorners[(j + 1) % 4]
               )
             ) {
               intersectionPoint = getIntersectionPoint(
-                characterCorners[i],
-                characterCorners[(i + 1) % 4],
+                entitieCorners[i],
+                entitieCorners[(i + 1) % 4],
                 tileCorners[j],
                 tileCorners[(j + 1) % 4]
               )
@@ -133,13 +133,13 @@ export function EntitiesAndTileCollision(
         }
 
         if (intersectionPoint) {
-          // Adjust character position based on intersection point
-          const characterWidth = characterBounds.width
-          const characterHeight = characterBounds.height
+          // Adjust entitie position based on intersection point
+          const entitieWidth = entitieBounds.width
+          const entitieHeight = entitieBounds.height
 
           // Determine collision direction
-          const charMidX = (characterBounds.left + characterBounds.right) / 2
-          const charMidY = (characterBounds.top + characterBounds.bottom) / 2
+          const charMidX = (entitieBounds.left + entitieBounds.right) / 2
+          const charMidY = (entitieBounds.top + entitieBounds.bottom) / 2
           const tileMidX = tileBounds.left + tileBounds.width / 2
           const tileMidY = tileBounds.top + tileBounds.height / 2
 
@@ -147,47 +147,41 @@ export function EntitiesAndTileCollision(
           const diffY = charMidY - tileMidY
 
           const overlapX =
-            Math.abs(diffX) - (characterBounds.width + tileBounds.width) / 2
+            Math.abs(diffX) - (entitieBounds.width + tileBounds.width) / 2
           const overlapY =
-            Math.abs(diffY) - (characterBounds.height + tileBounds.height) / 2
+            Math.abs(diffY) - (entitieBounds.height + tileBounds.height) / 2
 
-          // Adjust character position based on collision direction
+          // Adjust entitie position based on collision direction
           if (overlapX < overlapY) {
             if (diffY < 0) {
-              character.setPosition(
-                character.x,
-                tileBounds.top - characterHeight / 2
-              )
-              character.setVelocity(character.body!.velocity.x, 0)
+              entitie.setPosition(entitie.x, tileBounds.top - entitieHeight / 2)
+              entitie.setVelocity(entitie.body!.velocity.x, 0)
               inAir = false // Update inAir variable
             } else {
-              character.setPosition(
-                character.x,
-                tileBounds.bottom + characterHeight / 2
+              entitie.setPosition(
+                entitie.x,
+                tileBounds.bottom + entitieHeight / 2
               )
-              character.setVelocity(character.body!.velocity.x, 0)
+              entitie.setVelocity(entitie.body!.velocity.x, 0)
             }
           } else {
             if (diffX < 0) {
-              character.setPosition(
-                tileBounds.left - characterWidth / 2,
-                character.y
-              )
-              character.setVelocity(0, character.body!.velocity.y)
+              entitie.setPosition(tileBounds.left - entitieWidth / 2, entitie.y)
+              entitie.setVelocity(0, entitie.body!.velocity.y)
             } else {
-              character.setPosition(
-                tileBounds.right + characterWidth / 2,
-                character.y
+              entitie.setPosition(
+                tileBounds.right + entitieWidth / 2,
+                entitie.y
               )
-              character.setVelocity(0, character.body!.velocity.y)
+              entitie.setVelocity(0, entitie.body!.velocity.y)
             }
             inAir = false // Update inAir variable
           }
-          character.setGravityY(0)
+          entitie.setGravityY(0)
         }
       }
     })
 
-    character.inAir = inAir // Update character.inAir after the loop
+    entitie.inAir = inAir // Update entitie.inAir after the loop
   })
 }
