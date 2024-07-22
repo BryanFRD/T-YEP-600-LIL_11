@@ -25,6 +25,7 @@ const config = {
     },
     powerPreference: 'high-performance',
     scene: Scene(),
+    pixelArt: true,
     physics: {
       default: 'arcade',
       arcade: {
@@ -34,6 +35,18 @@ const config = {
         },
         debug: true
       }
+    }
+  },
+  map: {
+    example: {
+      name: 'example',
+      tilesetPath: `assets/maps/mapTest/tileTest-extruded.png`,
+      tilesetSizes: { frameWidth: 16, frameHeight: 16 },
+      tilesetMargin: 1,
+      tilesetSpacing: 2,
+      tilesetOffset: { x: 0, y: 0 },
+      tilemapPath: `assets/maps/mapTest/mapTest.json`,
+      zoom: 3
     }
   }
 }
