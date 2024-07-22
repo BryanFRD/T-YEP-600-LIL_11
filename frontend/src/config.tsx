@@ -38,14 +38,15 @@ const config = {
     }
   },
   map: {
-    exemple: {
-      name: 'exemple',
+    example: {
+      name: 'example',
       tilesetPath: `assets/maps/mapTest/tileTest-extruded.png`,
       tilesetSizes: { frameWidth: 16, frameHeight: 16 },
       tilesetMargin: 1,
       tilesetSpacing: 2,
       tilesetOffset: { x: 0, y: 0 },
-      tilemapPath: `assets/maps/mapTest/mapTest.json`
+      tilemapPath: `assets/maps/mapTest/mapTest.json`,
+      zoom: 3
     }
   }
 }
