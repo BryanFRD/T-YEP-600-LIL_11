@@ -34,7 +34,6 @@ class GameScene extends Phaser.Scene implements IScene {
       `tilemap_${this.mapName}`,
       this.mapConfig.tilemapPath
     )
-    this.cameras.main.setBackgroundColor('#000000')
   }
 
   create() {
@@ -68,6 +67,13 @@ class GameScene extends Phaser.Scene implements IScene {
     this.controllerManager = new ControllerManager(
       this,
       new Character(this, randomInt(400, 1040), randomInt(0, 100), 'mage')
+    )
+
+    this.cameras.main.startFollow(
+      this.controllerManager.character,
+      false,
+      0.05,
+      0.05
     )
 
     this.physics.add.collider(
