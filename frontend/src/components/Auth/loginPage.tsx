@@ -1,21 +1,23 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import Button from './buttonComponent'
 import FormInputComponent from './formInputComponent'
+import UserContext from '../../context/UserContext'
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
+  const {login, register} = useContext(UserContext)
+
   const handleLogin = () => {
-    console.log('Email:', email)
-    console.log('Password:', password)
+    login(email, password)
   }
 
   const handleSignUp = () => {
-    navigate('/register')
+    register(email, password)
   }
 
   return (
