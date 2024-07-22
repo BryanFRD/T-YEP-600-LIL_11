@@ -59,9 +59,10 @@ class GameScene extends Phaser.Scene implements IScene {
 
     this.createLayers(map, tileset)
     this.setupDeathObjects(map)
+    console.log(window.innerWidth, window.innerHeight)
 
     for (let i = 0; i < 5; i++) {
-      new Character(this, randomInt(400, 700), randomInt(0, 100), 'warrior')
+      new Character(this, randomInt(400, 1040), randomInt(0, 100), 'warrior')
     }
 
     this.controllerManager = new ControllerManager(

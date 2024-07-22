@@ -17,8 +17,6 @@ class Mage implements ICharacter {
     this.character = character
 
     if (this.character && this.character.body) {
-      this.character.setVelocity(100, 200)
-
       this.character.setTintFill(0x787878)
       this.character.setDisplaySize(64, 96)
 
