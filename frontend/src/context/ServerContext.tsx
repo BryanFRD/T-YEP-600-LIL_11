@@ -1,7 +1,7 @@
 import { ClientChannel, geckos } from '@geckos.io/client'
 import { createContext, PropsWithChildren, useEffect, useState } from 'react'
 
-import ServerEvent from '../enum/ServerEvent'
+import ServerEvent from '../../server/ServerEvent'
 import logger from '../logger/logger'
 import getEnvValue from '../utils/environment'
 
