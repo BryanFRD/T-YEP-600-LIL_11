@@ -10,7 +10,7 @@ import { IScene } from './scene'
 
 class GameScene extends Phaser.Scene implements IScene {
   controllerManager?: ControllerManager
-  camera: Phaser.Cameras.Scene2D.Camera
+  camera: Phaser.Cameras.Scene2D.Camera | undefined
   mapName: string
   mapConfig: (typeof config.map)[keyof typeof config.map]
 
@@ -70,8 +70,10 @@ class GameScene extends Phaser.Scene implements IScene {
       new Character(this, randomInt(400, 1040), randomInt(0, 100), 'mage')
     )
 
+    if (!this.camera) {
+      throw new Error('Invalid camera')
+    }
     this.camera.startFollow(this.controllerManager.character, false, 0.05, 0.05)
-    console.log(map.widthInPixels, map.heightInPixels)
     this.camera.setBounds(
       0,
       0,
