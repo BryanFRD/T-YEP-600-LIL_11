@@ -1,8 +1,16 @@
-FROM coturn/coturn:latest
+FROM debian:latest
 
-COPY --chmod=755 generate_turn_config.sh /usr/local/bin/generate_turn_config.sh
+RUN apt-get update && apt-get install -y \
+    coturn \
+    sudo \
+    && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 3478
-EXPOSE 5349
+COPY generate_turn_config.sh /usr/local/bin/generate_turn_config.sh
 
-CMD /usr/local/bin/generate_turn_config.sh && turnserver -c /etc/turnserver.conf
+RUN chmod +x /usr/local/bin/generate_turn_config.sh
+
+EXPOSE 3478 5349
+
+RUN ./usr/local/bin/generate_turn_config.sh
+
+CMD ["turnserver", "-c", "/etc/turnserver.conf"]
