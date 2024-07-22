@@ -5,14 +5,14 @@ import Character from './character'
 
 type Point = { x: number; y: number }
 
-// Fonction pour déterminer l'orientation des points p, q, et r
+// Function to determine the orientation of points p, q, and r
 const getOrientation = (p: Point, q: Point, r: Point): number => {
   const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y)
-  if (val === 0) return 0 // colinéaire
-  return val > 0 ? 1 : 2 // sens horaire ou antihoraire
+  if (val === 0) return 0 // collinear
+  return val > 0 ? 1 : 2 // clockwise or counterclockwise
 }
 
-// Fonction pour vérifier si le point q est sur le segment pr
+// Function to check if point q is on segment pr
 const isOnSegment = (p: Point, q: Point, r: Point): boolean => {
   return (
     q.x <= Math.max(p.x, r.x) &&
@@ -22,7 +22,7 @@ const isOnSegment = (p: Point, q: Point, r: Point): boolean => {
   )
 }
 
-// Fonction pour vérifier si les segments p1q1 et p2q2 se croisent
+// Function to check if segments p1q1 and p2q2 intersect
 const segmentsIntersect = (
   p1: Point,
   q1: Point,
@@ -34,10 +34,10 @@ const segmentsIntersect = (
   const o3 = getOrientation(p2, q2, p1)
   const o4 = getOrientation(p2, q2, q1)
 
-  // Cas général : les segments se croisent si les orientations sont différentes
+  // General case: segments intersect if orientations are different
   if (o1 !== o2 && o3 !== o4) return true
 
-  // Cas particuliers : vérifier si les segments sont colinéaires et se touchent
+  // Special cases: check if segments are collinear and touch
   if (o1 === 0 && isOnSegment(p1, p2, q1)) return true
   if (o2 === 0 && isOnSegment(p1, q2, q1)) return true
   if (o3 === 0 && isOnSegment(p2, p1, q2)) return true
@@ -46,7 +46,7 @@ const segmentsIntersect = (
   return false
 }
 
-// Fonction pour trouver le point d'intersection entre deux segments
+// Function to find the intersection point of two segments
 const getIntersectionPoint = (
   p1: Point,
   q1: Point,
@@ -64,7 +64,7 @@ const getIntersectionPoint = (
   const determinant = A1 * B2 - A2 * B1
 
   if (determinant === 0) {
-    // Les lignes sont parallèles
+    // Lines are parallel
     return null
   } else {
     const x = (B2 * C1 - B1 * C2) / determinant
@@ -78,120 +78,116 @@ export function EntitiesAndTileCollision(
   tilemapLayer: Phaser.Tilemaps.TilemapLayer
 ) {
   entities.forEach(entity => {
-    if (entity instanceof Character) {
-      const character = entity as Character
-      const characterBounds = character.getBounds()
+    const character = entity as Character
+    const characterBounds = character.getBounds()
 
-      // Définir les coins du personnage
-      const characterCorners: Point[] = [
-        { x: characterBounds.left, y: characterBounds.top },
-        { x: characterBounds.right, y: characterBounds.top },
-        { x: characterBounds.right, y: characterBounds.bottom },
-        { x: characterBounds.left, y: characterBounds.bottom }
-      ]
+    // Define character corners
+    const characterCorners: Point[] = [
+      { x: characterBounds.left, y: characterBounds.top },
+      { x: characterBounds.right, y: characterBounds.top },
+      { x: characterBounds.right, y: characterBounds.bottom },
+      { x: characterBounds.left, y: characterBounds.bottom }
+    ]
 
-      let inAir = true // Initialize inAir variable outside the loop
+    let inAir = true // Initialize inAir variable outside the loop
 
-      tilemapLayer.forEachTile(tile => {
-        if (tile.collides) {
-          const tileBounds = new Phaser.Geom.Rectangle(
-            tile.pixelX * 3,
-            tile.pixelY * 3,
-            tile.width * 3,
-            tile.height * 3
-          )
+    tilemapLayer.forEachTile(tile => {
+      if (tile.collides) {
+        const tileBounds = new Phaser.Geom.Rectangle(
+          tile.pixelX * 3,
+          tile.pixelY * 3,
+          tile.width * 3,
+          tile.height * 3
+        )
 
-          // Définir les coins de la tuile
-          const tileCorners: Point[] = [
-            { x: tileBounds.left, y: tileBounds.top },
-            { x: tileBounds.right, y: tileBounds.top },
-            { x: tileBounds.right, y: tileBounds.bottom },
-            { x: tileBounds.left, y: tileBounds.bottom }
-          ]
+        // Define tile corners
+        const tileCorners: Point[] = [
+          { x: tileBounds.left, y: tileBounds.top },
+          { x: tileBounds.right, y: tileBounds.top },
+          { x: tileBounds.right, y: tileBounds.bottom },
+          { x: tileBounds.left, y: tileBounds.bottom }
+        ]
 
-          // Vérifier les intersections entre les segments du personnage et de la tuile
-          let intersectionPoint: Point | null = null
-          for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < 4; j++) {
-              if (
-                segmentsIntersect(
-                  characterCorners[i],
-                  characterCorners[(i + 1) % 4],
-                  tileCorners[j],
-                  tileCorners[(j + 1) % 4]
-                )
-              ) {
-                intersectionPoint = getIntersectionPoint(
-                  characterCorners[i],
-                  characterCorners[(i + 1) % 4],
-                  tileCorners[j],
-                  tileCorners[(j + 1) % 4]
-                )
-                if (intersectionPoint) break
-              }
+        // Check intersections between character segments and tile segments
+        let intersectionPoint: Point | null = null
+        for (let i = 0; i < 4; i++) {
+          for (let j = 0; j < 4; j++) {
+            if (
+              segmentsIntersect(
+                characterCorners[i],
+                characterCorners[(i + 1) % 4],
+                tileCorners[j],
+                tileCorners[(j + 1) % 4]
+              )
+            ) {
+              intersectionPoint = getIntersectionPoint(
+                characterCorners[i],
+                characterCorners[(i + 1) % 4],
+                tileCorners[j],
+                tileCorners[(j + 1) % 4]
+              )
+              if (intersectionPoint) break
             }
-            if (intersectionPoint) break
           }
-
-          if (intersectionPoint) {
-            // Ajuster la position du personnage en fonction du point d'intersection
-            const characterWidth = characterBounds.width
-            const characterHeight = characterBounds.height
-
-            // Déterminer la direction de la collision
-            const charMidX = (characterBounds.left + characterBounds.right) / 2
-            const charMidY = (characterBounds.top + characterBounds.bottom) / 2
-            const tileMidX = tileBounds.left + tileBounds.width / 2
-            const tileMidY = tileBounds.top + tileBounds.height / 2
-
-            const diffX = charMidX - tileMidX
-            const diffY = charMidY - tileMidY
-
-            const overlapX =
-              Math.abs(diffX) - (characterBounds.width + tileBounds.width) / 2
-            const overlapY =
-              Math.abs(diffY) - (characterBounds.height + tileBounds.height) / 2
-
-            // Ajuster la position du personnage en fonction de la direction de la collision
-            if (overlapX < overlapY) {
-              if (diffY < 0) {
-                character.setPosition(
-                  character.x,
-                  tileBounds.top - characterHeight / 2
-                )
-                character.setVelocity(character.body!.velocity.x, 0)
-                inAir = false // Update inAir variable
-              } else {
-                character.setPosition(
-                  character.x,
-                  tileBounds.bottom + characterHeight / 2
-                )
-                character.setVelocity(character.body!.velocity.x, 0)
-              }
-            } else {
-              if (diffX < 0) {
-                character.setPosition(
-                  tileBounds.left - characterWidth / 2,
-                  character.y
-                )
-                character.setVelocity(0, character.body!.velocity.y)
-              } else {
-                character.setPosition(
-                  tileBounds.right + characterWidth / 2,
-                  character.y
-                )
-                character.setVelocity(0, character.body!.velocity.y)
-              }
-              inAir = false // Update inAir variable
-            }
-            character.setGravityY(0)
-          }
+          if (intersectionPoint) break
         }
-      })
 
-      character.inAir = inAir // Update character.inAir after the loop
-    } else if (entity instanceof Weapon) {
-      // Gérer la collision de l'arme avec la plateforme
-    }
+        if (intersectionPoint) {
+          // Adjust character position based on intersection point
+          const characterWidth = characterBounds.width
+          const characterHeight = characterBounds.height
+
+          // Determine collision direction
+          const charMidX = (characterBounds.left + characterBounds.right) / 2
+          const charMidY = (characterBounds.top + characterBounds.bottom) / 2
+          const tileMidX = tileBounds.left + tileBounds.width / 2
+          const tileMidY = tileBounds.top + tileBounds.height / 2
+
+          const diffX = charMidX - tileMidX
+          const diffY = charMidY - tileMidY
+
+          const overlapX =
+            Math.abs(diffX) - (characterBounds.width + tileBounds.width) / 2
+          const overlapY =
+            Math.abs(diffY) - (characterBounds.height + tileBounds.height) / 2
+
+          // Adjust character position based on collision direction
+          if (overlapX < overlapY) {
+            if (diffY < 0) {
+              character.setPosition(
+                character.x,
+                tileBounds.top - characterHeight / 2
+              )
+              character.setVelocity(character.body!.velocity.x, 0)
+              inAir = false // Update inAir variable
+            } else {
+              character.setPosition(
+                character.x,
+                tileBounds.bottom + characterHeight / 2
+              )
+              character.setVelocity(character.body!.velocity.x, 0)
+            }
+          } else {
+            if (diffX < 0) {
+              character.setPosition(
+                tileBounds.left - characterWidth / 2,
+                character.y
+              )
+              character.setVelocity(0, character.body!.velocity.y)
+            } else {
+              character.setPosition(
+                tileBounds.right + characterWidth / 2,
+                character.y
+              )
+              character.setVelocity(0, character.body!.velocity.y)
+            }
+            inAir = false // Update inAir variable
+          }
+          character.setGravityY(0)
+        }
+      }
+    })
+
+    character.inAir = inAir // Update character.inAir after the loop
   })
 }

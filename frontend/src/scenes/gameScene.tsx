@@ -73,7 +73,7 @@ class GameScene extends Phaser.Scene implements IScene {
     this.physics.add.collider(
       this.children.getAll().filter(child => child instanceof Character),
       this.objectsDeath as Phaser.GameObjects.Sprite[],
-      (character, object) => {
+      character => {
         ;(character as Character).deleteCharacter()
         if (character === this.controllerManager?.character) {
           this.controllerManager = undefined
@@ -137,9 +137,12 @@ class GameScene extends Phaser.Scene implements IScene {
     }
 
     EntitiesAndTileCollision(
-      this.children
-        .getAll()
-        .filter(child => child instanceof (Character || Weapon)),
+      this.children.getAll().filter((child: Phaser.GameObjects.GameObject) => {
+        return (
+          child instanceof Character ||
+          (child instanceof Weapon && child.character === null)
+        )
+      }) as (Character | Weapon)[],
       this.layerPlatform
     )
 
