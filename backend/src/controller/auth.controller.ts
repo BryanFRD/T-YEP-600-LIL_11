@@ -158,7 +158,7 @@ class AuthController {
         });
 
         logger.info(`Token refreshed for user ${player.id}`);
-        return res.status(HttpCode.Ok).json({ access_token: new_access_token });
+        return res.status(HttpCode.OK).json({ access_token: new_access_token });
       },
     );
   }
