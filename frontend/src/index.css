@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  font-family: 'Pixelify Sans', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+@layer utilities {
+  @keyframes scrollBackground {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .animatedBackground {
+    animation: scrollBackground 30s linear infinite;
+    background-image: url('/assets/images/background.png');
+    background-size: 200% 100%;
+    background-repeat: repeat-x;
+  }
+}

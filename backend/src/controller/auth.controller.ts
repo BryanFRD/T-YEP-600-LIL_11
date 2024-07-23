@@ -17,6 +17,8 @@ import {
 } from '../utils/api.response';
 import HttpCode from '../utils/http.code';
 import { handleJoiValidationError } from '../utils/joi';
+import InvalidPassword from '../error/InvalidPassword';
+import UserNotFoundByIdentifier from '../error/UserNotFoundByIdentifier';
 
 class AuthController {
   private authService: AuthImplementation;
@@ -42,10 +44,10 @@ class AuthController {
         'User registered successfully',
       );
 
-      return res.send(response);
+      return res.status(HttpCode.OK).send(response);
     } catch (error: any) {
       {
-        return res.json(
+        return res.status(HttpCode.INTERNAL_SERVER_ERROR).json(
           createErrorResponse(HttpCode.INTERNAL_SERVER_ERROR, error.message),
         );
       }
@@ -63,7 +65,7 @@ class AuthController {
       const user = await this.authService.loginUser(value as LoginDTO);
 
       if (!user) {
-        return res.json(
+        return res.status(HttpCode.UNAUTHORIZED).json(
           createErrorResponse(HttpCode.UNAUTHORIZED, 'Invalid credentials'),
         );
       }
@@ -82,7 +84,7 @@ class AuthController {
         sameSite: true,
       });
 
-      return res.json(
+      return res.status(HttpCode.OK).json(
         createSuccessResponse(
           { access_token: access_token },
           HttpCode.OK,
@@ -90,9 +92,20 @@ class AuthController {
         ),
       );
     } catch (error: any) {
-      return res.json(
-        createErrorResponse(HttpCode.UNAUTHORIZED, error.message),
-      );
+      switch (error.constructor) {  
+        case InvalidPassword:
+          return res.status(HttpCode.BAD_REQUEST).json(
+            createErrorResponse(HttpCode.BAD_REQUEST, 'Invalid password'),
+          );
+        case UserNotFoundByIdentifier:
+          return res.status(HttpCode.NOT_FOUND).json(
+            createErrorResponse(HttpCode.NOT_FOUND, 'User not found'),
+          );
+        default:
+          return res.json(
+            createErrorResponse(HttpCode.INTERNAL_SERVER_ERROR, error.message),
+          );
+      }
     }
   }
 
@@ -116,7 +129,7 @@ class AuthController {
           username: player.username,
         });
 
-        return res.json(
+        return res.status(HttpCode.OK).json(
           createSuccessResponse(
             { access_token: access_token },
             HttpCode.OK,
