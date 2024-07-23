@@ -11,7 +11,9 @@ type ConfigKey =
   | 'POSTGRES_PASSWORD'
   | 'POSTGRES_DB'
   | 'DATABASE_URL'
-  | 'JWT_TOKEN';
+  | 'JWT_TOKEN'
+  | 'REDIS_URL'
+  | 'COOKIE_SECRET';
 
 const getEnvValue = (
   key: ConfigKey,

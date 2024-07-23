@@ -9,6 +9,6 @@ const playerController = new PlayerController();
 
 // GET
 
-playerRouter.get('/', authenticateToken, playerController.getPlayers);
+playerRouter.get('', authenticateToken, playerController.getPlayers);
 
 export default playerRouter;

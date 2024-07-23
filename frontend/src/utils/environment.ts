@@ -9,6 +9,7 @@ type ConfigKey =
   | 'LOG_LEVEL'
   | 'API_URL'
   | 'SERVER_URL'
+  | 'SERVER_PORT'
   | 'STUN_URL'
   | 'TURN_URL'
   | 'TURN_USERNAME'

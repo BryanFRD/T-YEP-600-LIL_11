@@ -1,10 +1,16 @@
-FROM coturn/coturn:latest
+FROM debian:latest
 
-COPY turnserver.conf /etc/turnserver.conf
+RUN apt-get update && apt-get install -y \
+    coturn \
+    sudo \
+    && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 3478
-EXPOSE 3478/udp
-EXPOSE 5349
-EXPOSE 5349/udp
+COPY generate_turn_config.sh /usr/local/bin/generate_turn_config.sh
 
-CMD ["turnserver", "-c", "/etc/turnserver.conf", "--log-file=/var/log/turnserver/turnserver.log", "--lt-cred-mech"]
+RUN chmod +x /usr/local/bin/generate_turn_config.sh
+
+EXPOSE 3478 5349
+
+RUN ./usr/local/bin/generate_turn_config.sh
+
+CMD ["turnserver", "-c", "/etc/turnserver.conf"]

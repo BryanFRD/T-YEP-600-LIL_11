@@ -116,6 +116,7 @@ export const ServerContextProvider: React.FC<PropsWithChildren> = ({
   useEffect(() => {
     const client = geckos({
       url: getEnvValue('SERVER_URL'),
+      port: parseInt(getEnvValue('SERVER_PORT')!),
       iceServers: [
         {
           urls: getEnvValue('STUN_URL')!

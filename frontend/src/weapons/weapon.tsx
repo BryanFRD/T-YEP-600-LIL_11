@@ -38,6 +38,8 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
   text: Phaser.GameObjects.Text
   character: Character | null
 
+  inAir: boolean = false
+
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -96,6 +98,12 @@ class Weapon extends Phaser.Physics.Arcade.Sprite {
   update(_time: number, delta: number) {
     if (!this.body) {
       throw new Error('Invalid weapon name')
+    }
+
+    if (!this.inAir) {
+      this.setGravityY(0)
+    } else {
+      this.setGravityY(2000)
     }
 
     this.text.x = this.x + (this.body.velocity.x * delta) / 1000
