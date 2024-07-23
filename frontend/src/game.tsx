@@ -3,7 +3,6 @@ import { useEffect, useRef } from 'react'
 
 import config from './config'
 import logger from './logger/logger'
-import useServerContext from './context/export/ServerContextExport'
 
 const PhaserGame = () => {
   const gameRef = useRef(null)
