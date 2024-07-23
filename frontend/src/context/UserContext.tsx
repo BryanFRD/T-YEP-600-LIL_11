@@ -3,8 +3,8 @@ import { createContext, PropsWithChildren, useState } from 'react'
 import logger from '../logger/logger'
 
 export interface UserContextValue {
-  login: (username: string, email: string) => void
-  register: (username: string, email: string) => void
+  login: (user: Partial<User>) => void
+  register: (user: Partial<User>) => void
   update: (user: Partial<User>) => void
   refresh: () => void
   disconnect: () => void
@@ -14,7 +14,11 @@ export interface UserContextValue {
 export interface User {
   id: string
   username: string
+  firstname: string
+  name: string
   email: string
+  password?: string
+  identifier?: string
 }
 
 const initialContextValue: UserContextValue = {
@@ -33,14 +37,14 @@ export const UserContextProvider: React.FC<PropsWithChildren> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null)
 
-  const login = (username: string, email: string) => {
-    logger.debug('login:', username, email)
+  const login = (user: Partial<User>) => {
+    logger.debug('login:', user.username, user.email)
     // TODO: Faire une requête pour connecter l'utilisateur
-    setUser({ id: 'NULL', username, email })
+    setUser(user as User)
   }
 
-  const register = (username: string, email: string) => {
-    logger.debug('register:', username, email)
+  const register = (user: Partial<User>) => {
+    logger.debug('register:', user.username, user.email)
     // TODO: Faire une requête pour créer un nouvel utilisateur
   }
 

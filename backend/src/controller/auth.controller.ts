@@ -19,6 +19,8 @@ import {
 } from '../utils/api.response';
 import HttpCode from '../utils/http.code';
 import { handleJoiValidationError } from '../utils/joi';
+import InvalidPassword from '../error/InvalidPassword';
+import UserNotFoundByIdentifier from '../error/UserNotFoundByIdentifier';
 
 class AuthController {
   private authService: AuthImplementation;
@@ -47,11 +49,13 @@ class AuthController {
         'User registered successfully',
       );
 
-      return res.send(response);
+      return res.status(HttpCode.OK).send(response);
     } catch (error: any) {
-      return res.json(
-        createErrorResponse(HttpCode.INTERNAL_SERVER_ERROR, error.message),
-      );
+      {
+        return res.status(HttpCode.INTERNAL_SERVER_ERROR).json(
+          createErrorResponse(HttpCode.INTERNAL_SERVER_ERROR, error.message),
+        );
+      }
     }
   }
 
@@ -65,7 +69,7 @@ class AuthController {
       const user = await this.authService.loginUser(value as LoginDTO);
 
       if (!user) {
-        return res.json(
+        return res.status(HttpCode.UNAUTHORIZED).json(
           createErrorResponse(HttpCode.UNAUTHORIZED, 'Invalid credentials'),
         );
       }
@@ -86,14 +90,31 @@ class AuthController {
         secure: true,
         sameSite: 'strict',
       });
-
+      
       logger.info(`User ${user.id} logged in successfully`);
-      return res.json({ access_token: access_token });
-    } catch (error: any) {
-      logger.error(`Error occurred while logging in: ${error.message}`);
-      return res.json(
-        createErrorResponse(HttpCode.UNAUTHORIZED, error.message),
+
+      return res.status(HttpCode.OK).json(
+        createSuccessResponse(
+          { access_token: access_token },
+          HttpCode.OK,
+          'User logged in successfully',
+        ),
       );
+    } catch (error: any) {
+      switch (error.constructor) {  
+        case InvalidPassword:
+          return res.status(HttpCode.BAD_REQUEST).json(
+            createErrorResponse(HttpCode.BAD_REQUEST, 'Invalid password'),
+          );
+        case UserNotFoundByIdentifier:
+          return res.status(HttpCode.NOT_FOUND).json(
+            createErrorResponse(HttpCode.NOT_FOUND, 'User not found'),
+          );
+        default:
+          return res.json(
+            createErrorResponse(HttpCode.INTERNAL_SERVER_ERROR, error.message),
+          );
+      }
     }
   }
 
@@ -126,7 +147,7 @@ class AuthController {
           id: player.id,
           username: player.username,
         });
-
+        
         await this.redisService.revokeToken(refresh_token);
         res.cookie('refresh_token', new_refresh_token, {
           ...cookieOptions,
@@ -137,7 +158,7 @@ class AuthController {
         });
 
         logger.info(`Token refreshed for user ${player.id}`);
-        return res.json({ access_token: new_access_token });
+        return res.status(HttpCode.OK).json({ access_token: new_access_token });
       },
     );
   }
