@@ -59,7 +59,6 @@ class Mage implements ICharacter {
       this.character.weapon.setVelocityX(Math.cos(angle) * 1000)
       this.character.weapon = null
     }
-  
 
     if (target && target.body && target instanceof Weapon) {
       this.character.weapon = target
