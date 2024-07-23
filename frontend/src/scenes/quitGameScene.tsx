@@ -8,4 +8,5 @@ class OptionsScene extends Phaser.Scene {
     // Ajoutez ici la logique pour afficher et modifier les options du jeu
   }
 }
+
 export default OptionsScene

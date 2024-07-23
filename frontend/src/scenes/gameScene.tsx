@@ -7,9 +7,13 @@ import ControllerManager from '../characters/controllerManager'
 import config from '../config'
 import Weapon from '../weapons/weapon'
 import { IScene } from './scene'
+import InputManager from '../manager/InputManager'
+import { InputKey } from '../input/InputEnum'
+import DetailsScene from './detailsScene'
 
-class GameScene extends Phaser.Scene implements IScene {
-  controllerManager?: ControllerManager
+class GameScene extends Phaser.Scene implements IScene, InputManager {
+  controllerManager: ControllerManager | undefined
+  detailsScene: DetailsScene | undefined;
   camera: Phaser.Cameras.Scene2D.Camera | undefined
   mapName: string
   mapConfig: (typeof config.map)[keyof typeof config.map]
@@ -92,6 +96,9 @@ class GameScene extends Phaser.Scene implements IScene {
         }
       }
     )
+    
+    this.detailsScene = new DetailsScene(this);
+    this.detailsScene.create()
   }
 
   private createLayers(
@@ -164,7 +171,15 @@ class GameScene extends Phaser.Scene implements IScene {
       }
     })
     this.controllerManager?.update(time, delta)
+    this.detailsScene?.update(time, delta)
   }
+  
+  handleInput(key: InputKey, status: boolean): void {
+    if(key === InputKey.INFORMATIONS && status) {
+      this.detailsScene?.switchVisible()
+    }
+  }
+  
 }
 
 export default GameScene
