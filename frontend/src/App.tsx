@@ -3,6 +3,7 @@ import { toast, ToastContainer, Zoom } from 'react-toastify'
 import Router from './routes/router'
 
 import 'react-toastify/dist/ReactToastify.css'
+import { BrowserRouter } from 'react-router-dom'
 
 function App() {
   return (
@@ -20,7 +21,9 @@ function App() {
         transition={Zoom}
         theme="light"
       />
-      <Router></Router>
+      <BrowserRouter>
+        <Router></Router>
+      </BrowserRouter>
     </>
   )
 }

@@ -1,9 +1,9 @@
-import { User } from '../context/UserContext'
+import { AuthLogin, AuthRegister } from '../types/auth.type'
 
 interface AuthService {
-  login(user: Partial<User>): Promise<boolean>
+  login(user: AuthLogin): Promise<boolean>
   logout(): Promise<boolean>
-  register(user: Partial<User>): Promise<boolean>
+  register(user: AuthRegister): Promise<boolean>
 }
 
 export default AuthService

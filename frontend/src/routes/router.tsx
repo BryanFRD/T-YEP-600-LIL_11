@@ -1,14 +1,20 @@
-import { useContext } from 'react'
-import { BrowserRouter as ReactRouter, Route, Routes } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 
-import UserContext from '../context/UserContext'
 import routes from './config.routes'
 
 const Router = () => {
-  const { user } = useContext(UserContext)
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const currentRoute = routes.find(route => route.path === window.location.pathname);
+    
+    
+    if(!user && currentRoute?.requiresAuth)
+      navigate('/login')
+  }, [user, navigate]);
 
   return (
-    <ReactRouter>
       <Routes>
         {routes
           .filter(({ requiresGuest, requiresAuth, requiresAdmin }) => {
@@ -26,7 +32,6 @@ const Router = () => {
             />
           ))}
       </Routes>
-    </ReactRouter>
   )
 }
 

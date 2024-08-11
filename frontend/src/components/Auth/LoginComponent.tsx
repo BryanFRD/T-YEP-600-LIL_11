@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 
-import { User } from '../../context/UserContext'
 import AuthImplementation from '../../service/impl/auth.implementation'
+import logger from '../../logger/logger'
+import { User } from '../../types/user.type'
 
 const LoginComponent: React.FC = () => {
-
-    let navigate = useNavigate()
+  const navigate = useNavigate()
   const service = new AuthImplementation()
 
   const [formData, setFormData] = useState({
@@ -34,13 +34,16 @@ const LoginComponent: React.FC = () => {
     toast.promise(
       service
         .login(body)
-        .then(res => {
+        .then((res) => {
           if (res) {
-            navigate('/', { replace: true })
+            navigate('/', { replace: true });
+          } else {
+            throw new Error('Identifiant ou mot de passe incorrect');
           }
         })
         .catch(err => {
-          console.error(err)
+          logger.error(err);
+          throw err;
         }),
       {
         pending: 'Connexion en cours...',

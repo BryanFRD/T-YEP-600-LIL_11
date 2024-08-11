@@ -1,21 +1,20 @@
 import axios from 'axios'
 
-import instance from '../../api/axios.config'
-import { User } from '../../context/UserContext'
+import api from '../../api/axios.config'
 import AuthService from '../auth.service'
+import { AuthLogin, AuthRegister } from '../../types/auth.type'
+import logger from '../../logger/logger'
 
 class AuthImplementation implements AuthService {
-  async login(user: Partial<User>): Promise<boolean> {
+  async login(user: AuthLogin): Promise<boolean> {
     try {
-      const response = await instance.post('/auth/login', user)
-      console.log(response)
+      const response = await api.post('/auth/login', user)
       if (response.status === axios.HttpStatusCode.Ok) {
         localStorage.setItem('access_token', response.data.access_token)
         return true
       }
       return false
     } catch (error) {
-      console.error(error)
       return false
     }
   }
@@ -23,7 +22,8 @@ class AuthImplementation implements AuthService {
   logout(): Promise<boolean> {
     throw new Error('Method not implemented.')
   }
-  register(_user: Partial<User>): Promise<boolean> {
+  register(user: AuthRegister): Promise<boolean> {
+    logger.info(user);
     throw new Error('Method not implemented.')
   }
 }

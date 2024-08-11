@@ -1,28 +1,54 @@
-import instance from '../../api/axios.config'
-import { User } from '../../context/UserContext'
+import { HttpStatusCode } from 'axios'
+import api from '../../api/axios.config'
+import logger from '../../logger/logger'
+import { User } from '../../types/user.type'
 import UserService from '../user.service'
 
 class UserImplementation implements UserService {
-  async getUsers(): Promise<User[]> {
-    try {
-      const response = await instance.get('/players')
-      return response.data
-    } catch (error) {
-      throw new Error('Method not implemented.')
-    }
+  getUsers(): Promise<User[]> {
+    return api.get('/players')
+      .then(response => {
+        if(response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        throw new Error('No users found')
+      });
   }
 
-  getUserById(_id: number): Promise<User> {
+  getUserById(id: number): Promise<User> {
+    return api.get(`/players/${id}`)
+      .then(response => {
+        if(response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        throw new Error('No user found')
+      });
+  }
+  
+  createUser(user: User): Promise<User> {
+    logger.info(user)
     throw new Error('Method not implemented.')
   }
-  createUser(_user: User): Promise<User> {
+  
+  updateUser(user: User): Promise<User> {
+    logger.info(user)
     throw new Error('Method not implemented.')
   }
-  updateUser(_user: User): Promise<User> {
+  
+  deleteUser(id: number): Promise<void> {
+    logger.info(id)
     throw new Error('Method not implemented.')
   }
-  deleteUser(_id: number): Promise<void> {
-    throw new Error('Method not implemented.')
+  
+  getCurrentUser(): Promise<User> {
+    return api.get('/players/me')
+      .then(response => {
+        if(response.status === HttpStatusCode.Ok) {
+          return response.data as User
+        }
+        throw new Error('No user found')
+        }
+      );
   }
 }
 

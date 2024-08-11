@@ -2,7 +2,7 @@ import axios from 'axios'
 
 import getEnvValue from '../utils/environment'
 
-const instance = axios.create({
+const api = axios.create({
   baseURL: getEnvValue('API_URL'),
   headers: {
     'Content-Type': 'application/json',
@@ -11,7 +11,7 @@ const instance = axios.create({
   timeout: 30000
 })
 
-instance.interceptors.request.use(
+api.interceptors.request.use(
   config => {
     const token = localStorage.getItem('access_token')
     if (token) {
@@ -24,4 +24,4 @@ instance.interceptors.request.use(
   }
 )
 
-export default instance
+export default api
