@@ -35,6 +35,29 @@ class PlayerController {
       );
     }
   }
+  
+  async getPlayerById(req: Request, res: Response) {
+    try {
+      const playerId = req.params.id;
+      const player = await this.playerService.getPlayerById(playerId);
+
+      return res.json(
+        createSuccessResponse(
+          player,
+          HttpCode.OK,
+          'Player fetched successfully',
+        ),
+      );
+    } catch (error: any) {
+      return res.json(
+        createErrorResponse(
+          HttpCode.INTERNAL_SERVER_ERROR,
+          'An error occurred while fetching player',
+        ),
+      );
+    }
+  }
+  
 }
 
 export default PlayerController;

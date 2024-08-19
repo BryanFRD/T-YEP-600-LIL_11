@@ -21,7 +21,7 @@ class PlayerImplementation implements PlayerService {
   async getPlayers(): Promise<getPlayerDTO[]> {
     const users = await db.player.findMany();
 
-    return users.map((user) => toPlayerDTO(user));
+    return users.map((user) => toPlayerDTO(user as Player));
   }
 }
 

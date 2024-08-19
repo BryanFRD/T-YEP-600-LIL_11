@@ -32,7 +32,7 @@ class AuthController {
     this.register = this.register.bind(this);
     this.refreshToken = this.refreshToken.bind(this);
     this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);  
+    this.logout = this.logout.bind(this);
   }
 
   async register(req: Request, res: Response) {

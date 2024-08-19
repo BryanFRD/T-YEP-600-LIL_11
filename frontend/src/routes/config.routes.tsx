@@ -2,7 +2,7 @@ import LoginComponent from '../components/Auth/LoginComponent'
 import RegisterComponent from '../components/Auth/RegisterComponent'
 import Home from '../view/Home'
 
-type RouteType = {
+export type RouteType = {
   path: string
   component: React.FC
   requiresGuest?: boolean

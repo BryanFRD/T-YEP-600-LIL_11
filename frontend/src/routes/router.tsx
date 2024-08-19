@@ -1,18 +1,35 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
-import routes from './config.routes'
+import routes, { RouteType } from './config.routes'
+import UserImplementation from '../service/impl/user.implementation'
+import { User } from '../types/user.type'
+import AuthImplementation from '../service/impl/auth.implementation'
 
 const Router = () => {
+  const [currentRoute, setCurrentRoute] = useState<RouteType | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
   
   useEffect(() => {
-    const currentRoute = routes.find(route => route.path === window.location.pathname);
+    setCurrentRoute(routes.find(route => route.path === window.location.pathname) ?? null)
     
+    const authImplementation = new AuthImplementation();
     
+    const fetchUser = async () => {
+      const user = await authImplementation.me();
+      
+      if(user)
+        setUser(user);
+    }
+    
+    fetchUser();
+  }, []);
+  
+  useEffect(() => {
     if(!user && currentRoute?.requiresAuth)
       navigate('/login')
-  }, [user, navigate]);
+  }, [user, navigate, currentRoute]);
 
   return (
       <Routes>

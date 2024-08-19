@@ -8,6 +8,9 @@ import { BrowserRouter } from 'react-router-dom'
 function App() {
   return (
     <>
+      <BrowserRouter>
+        <Router></Router>
+      </BrowserRouter>
       <ToastContainer
         position="bottom-right"
         autoClose={2500}
@@ -16,14 +19,11 @@ function App() {
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
-        draggable
+        draggable={false}
         pauseOnHover
         transition={Zoom}
         theme="light"
       />
-      <BrowserRouter>
-        <Router></Router>
-      </BrowserRouter>
     </>
   )
 }

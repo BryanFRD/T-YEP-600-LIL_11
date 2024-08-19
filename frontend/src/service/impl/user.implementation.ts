@@ -40,16 +40,6 @@ class UserImplementation implements UserService {
     throw new Error('Method not implemented.')
   }
   
-  getCurrentUser(): Promise<User> {
-    return api.get('/players/me')
-      .then(response => {
-        if(response.status === HttpStatusCode.Ok) {
-          return response.data as User
-        }
-        throw new Error('No user found')
-        }
-      );
-  }
 }
 
 export default UserImplementation
