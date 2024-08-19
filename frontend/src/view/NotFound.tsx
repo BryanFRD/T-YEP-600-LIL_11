@@ -1,10 +1,21 @@
-import { useContext } from 'react'
-
-import UserContext from '../context/UserContext'
+import { useEffect, useState } from 'react'
+import { User } from '../types/user.type'
+import AuthImplementation from '../service/impl/auth.implementation';
 
 const NotFound = () => {
-  const { user } = useContext(UserContext)
-
+  const [user, setUser] = useState<User | null>(null);
+  
+  useEffect(() => {
+    const authImplementation = new AuthImplementation()
+    
+    const fetchUser = async () => {
+      const user = await authImplementation.getMe()
+      setUser(user)
+    }
+    
+    fetchUser();
+  }, [])
+  
   return (
     <div className="flex flex-col items-center justify-center h-screen text-white">
       <h1 className="text-4xl font-bold text-gray-700">
