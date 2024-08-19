@@ -26,7 +26,6 @@ const RegisterComponent: React.FC = () => {
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault()
-    // Logic to handle registration
   }
 
   return (

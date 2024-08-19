@@ -1,11 +1,11 @@
-import { AxiosResponse } from 'axios'
-import { User } from '../context/UserContext'
+import { User } from '../types/user.type'
+import { AuthLogin, AuthRegister } from '../types/auth.type'
 
 interface AuthService {
-  login(user: Partial<User>): Promise<AxiosResponse | undefined>
+  login(user: AuthLogin): Promise<boolean>
   logout(): Promise<boolean>
-  register(user: Partial<User>): Promise<boolean>
-  getMe(): Promise<AxiosResponse | undefined>
+  register(user: AuthRegister): Promise<boolean>
+  getMe(): Promise<User | null>
 }
 
 export default AuthService

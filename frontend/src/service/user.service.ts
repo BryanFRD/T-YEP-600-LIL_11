@@ -1,4 +1,4 @@
-import { User } from '../context/UserContext'
+import { User } from '../types/user.type';
 
 interface UserService {
   getUsers(): Promise<User[]>
