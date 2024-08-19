@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import api from '../../api/axios.config'
+import { AxiosResponse } from 'axios';
 import AuthService from '../auth.service'
 import { AuthLogin, AuthRegister } from '../../types/auth.type'
 import logger from '../../logger/logger'
@@ -18,6 +19,18 @@ class AuthImplementation implements AuthService {
     } catch (error) {
       return false
     }
+  }
+
+  async getMe(): Promise<User | null> {
+    try {
+      const response = await api.get('/auth/me');
+      return response.data;
+    }
+    catch (error) {
+      logger.error(error);
+    }
+
+    return null;
   }
 
   logout(): Promise<boolean> {

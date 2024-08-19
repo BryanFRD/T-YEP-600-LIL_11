@@ -1,6 +1,7 @@
 import express from 'express';
 
 import AuthController from '../controller/auth.controller';
+import { authenticateToken } from '../middleware/auth.middleware';
 
 const authRouter = express.Router();
 
@@ -9,7 +10,12 @@ const authController = new AuthController();
 // POST
 
 authRouter.post('/register', authController.register);
-authRouter.post('/login', authController.login);
-authRouter.post('/logout', authController.logout);
+authRouter.post('/login',  authController.login);
+authRouter.post('/logout', authenticateToken, authController.logout);
 authRouter.post('/refresh-token', authController.refreshToken);
+
+// GET
+
+authRouter.get('/me', authenticateToken, authController.getMe);
+
 export default authRouter;

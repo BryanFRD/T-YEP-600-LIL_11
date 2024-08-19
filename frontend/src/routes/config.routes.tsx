@@ -1,6 +1,7 @@
 import LoginComponent from '../components/Auth/LoginComponent'
 import RegisterComponent from '../components/Auth/RegisterComponent'
 import Home from '../view/Home'
+import NotFound from '../view/NotFound'
 
 export type RouteType = {
   path: string
@@ -25,6 +26,10 @@ const routes: RouteType[] = [
     path: '/register',
     component: RegisterComponent,
     requiresGuest: true
+  },
+  {
+    path: '*',
+    component: NotFound
   }
 ]
 

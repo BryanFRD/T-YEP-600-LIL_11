@@ -1,16 +1,15 @@
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
-import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 import AuthImplementation from '../../service/impl/auth.implementation'
 import logger from '../../logger/logger'
-import { User } from '../../types/user.type'
 
 const LoginComponent: React.FC = () => {
-  const navigate = useNavigate()
   const service = new AuthImplementation()
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
     emailOrUsername: '',
@@ -25,9 +24,9 @@ const LoginComponent: React.FC = () => {
     }))
   }
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const body: Partial<User> = {
+    const body = {
       identifier: formData.emailOrUsername,
       password: formData.password
     }
@@ -47,8 +46,8 @@ const LoginComponent: React.FC = () => {
         }),
       {
         pending: 'Connexion en cours...',
-        success: 'Connexion réussie',
-        error: 'Identifiant ou mot de passe incorrect'
+        success: 'Connexion réussie 👌',
+        error: 'Identifiant ou mot de passe incorrect 🤯'
       }
     )
   }
