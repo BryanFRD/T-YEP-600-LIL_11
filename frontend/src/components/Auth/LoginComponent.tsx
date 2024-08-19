@@ -1,16 +1,14 @@
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
-import { toast } from 'react-toastify'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
-import { User } from '../../context/UserContext'
-import AuthImplementation from '../../service/impl/auth.implementation'
+import UserContext from '../../context/UserContext'
 
 const LoginComponent: React.FC = () => {
-
-    let navigate = useNavigate()
-  const service = new AuthImplementation()
+  const { login } = useContext(UserContext)
+  let navigate = useNavigate()
 
   const [formData, setFormData] = useState({
     emailOrUsername: '',
@@ -25,27 +23,22 @@ const LoginComponent: React.FC = () => {
     }))
   }
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const body: Partial<User> = {
+    const body = {
       identifier: formData.emailOrUsername,
       password: formData.password
     }
     toast.promise(
-      service
-        .login(body)
-        .then(res => {
-          if (res) {
-            navigate('/', { replace: true })
-          }
-        })
-        .catch(err => {
-          console.error(err)
-        }),
+      login(body).then(success => {
+        if (success) {
+          navigate('/', { replace: true })
+        }
+      }),
       {
         pending: 'Connexion en cours...',
-        success: 'Connexion réussie',
-        error: 'Identifiant ou mot de passe incorrect'
+        success: 'Connexion réussie 👌',
+        error: 'Identifiant ou mot de passe incorrect 🤯'
       }
     )
   }

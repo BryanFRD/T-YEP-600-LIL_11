@@ -10,6 +10,7 @@ import { hashPassword } from '../../utils/password.utils';
 import AuthService from '../auth.service';
 
 class AuthImplementation implements AuthService {
+
   async loginUser(user: LoginDTO): Promise<Partial<getPlayerDTO>> {
     const userFound = await db.player.findFirst({
       where: {
