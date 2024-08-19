@@ -4,7 +4,6 @@ class UserNotFoundByIdentifier extends Error {
     super(`User not found by identifier: ${identifier}`);
     this.name = 'UserNotFoundByIdentifier';
     this.statusCode = 404;
-
   }
 }
 

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { createClient, RedisClientType } from 'redis';
+
 import InvalidToken from '../error/InvalidToken';
 import logger from '../logger/logger';
 
@@ -8,9 +9,11 @@ class RedisService {
 
   constructor() {
     this.redisClient = createClient({
-      url: process.env.REDIS_URL
+      url: process.env.REDIS_URL,
     });
-    this.redisClient.on('error', (err) => logger.error('Redis Client Error', err));
+    this.redisClient.on('error', (err) =>
+      logger.error('Redis Client Error', err),
+    );
     this.redisClient.connect();
     this.isTokenRevoked = this.isTokenRevoked.bind(this);
     this.revokeToken = this.revokeToken.bind(this);

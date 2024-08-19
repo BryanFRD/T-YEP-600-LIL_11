@@ -1,23 +1,32 @@
-import axios from 'axios'
-
+import { AxiosResponse } from 'axios';
 import instance from '../../api/axios.config'
 import { User } from '../../context/UserContext'
 import AuthService from '../auth.service'
 
 class AuthImplementation implements AuthService {
-  async login(user: Partial<User>): Promise<boolean> {
+
+
+  async getMe(): Promise<AxiosResponse | undefined> {
     try {
-      const response = await instance.post('/auth/login', user)
-      console.log(response)
-      if (response.status === axios.HttpStatusCode.Ok) {
-        localStorage.setItem('access_token', response.data.access_token)
-        return true
-      }
-      return false
+      const response = await instance.get('/auth/me');
+      return response;
+    }
+    catch (error) {
+      console.error(error)
+    }
+
+    return undefined;
+  }
+
+
+  async login(user: Partial<User>): Promise<AxiosResponse | undefined> {
+    try {
+      return await instance.post('/auth/login', user);
     } catch (error) {
       console.error(error)
-      return false
     }
+    
+    return undefined;
   }
 
   logout(): Promise<boolean> {
