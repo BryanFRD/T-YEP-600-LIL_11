@@ -1,26 +1,31 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { toast, ToastContainer, Zoom } from 'react-toastify'
 
-import LoginPage from './components/Auth/loginPage'
-import SigninPage from './components/Auth/signinPage'
-import PhaserGame from './game'
+import Router from './routes/router'
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <PhaserGame />
-  },
-  {
-    path: '/login',
-    element: <LoginPage />
-  },
-  {
-    path: '/register',
-    element: <SigninPage />
-  }
-])
+import 'react-toastify/dist/ReactToastify.css'
+import { BrowserRouter } from 'react-router-dom'
 
 function App() {
-  return <RouterProvider router={router} />
+  return (
+    <>
+      <BrowserRouter>
+        <Router></Router>
+      </BrowserRouter>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={2500}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable={false}
+        pauseOnHover
+        transition={Zoom}
+        theme="light"
+      />
+    </>
+  )
 }
 
 export default App

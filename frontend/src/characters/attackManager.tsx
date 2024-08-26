@@ -51,7 +51,7 @@ class AttackManager {
     // Update the combo timer and the attack timers
     this.comboTimer -= delta
     this.attackTimer -= delta
-    for (let attack in this.functionTimers) {
+    for (const attack in this.functionTimers) {
       this.functionTimers[attack] -= delta
     }
 

@@ -9,19 +9,44 @@ import { db } from '../../utils/db.server';
 import PlayerService from '../player.service';
 
 class PlayerImplementation implements PlayerService {
-  getPlayerById(id: string): Promise<getPlayerDTO> {
-    throw new Error('Method not implemented.');
+  async getPlayerById(id: string): Promise<getPlayerDTO> {
+    const user = await db.player.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw new UserNotFoundById(id);
+    }
+
+    return toPlayerDTO(user);
   }
-  updatePlayer(id: string, Player: Player): Promise<getPlayerDTO> {
-    throw new Error('Method not implemented.');
+
+  async updatePlayer(id: string, Player: Partial<Player>): Promise<getPlayerDTO> {
+
+    const user = await db.player.update({
+      where: {
+        id,
+      },
+      data: Player,
+    });
+
+    if (!user) {
+      throw new UserNotFoundById(id);
+    }
+
+    return toPlayerDTO(user);
   }
+
+
   deletePlayer(id: string): Promise<void> {
     throw new Error('Method not implemented.');
   }
   async getPlayers(): Promise<getPlayerDTO[]> {
     const users = await db.player.findMany();
 
-    return users.map((user) => toPlayerDTO(user));
+    return users.map((user) => toPlayerDTO(user as Player));
   }
 }
 

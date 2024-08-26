@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "logger"],
+  "include": ["src", "logger", "src/server/ServerEvent.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
