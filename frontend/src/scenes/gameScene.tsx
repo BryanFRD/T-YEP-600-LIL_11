@@ -6,6 +6,7 @@ import { EntitiesAndTileCollision } from '../characters/collideManager'
 import ControllerManager from '../characters/controllerManager'
 import config from '../config'
 import Weapon from '../weapons/weapon'
+import HUD from './gameHud'
 import { IScene } from './scene'
 
 class GameScene extends Phaser.Scene implements IScene {
@@ -13,6 +14,9 @@ class GameScene extends Phaser.Scene implements IScene {
   camera: Phaser.Cameras.Scene2D.Camera | undefined
   mapName: string
   mapConfig: (typeof config.map)[keyof typeof config.map]
+
+  player?: Character
+  enemies?: Character[]
 
   layerPlatform: Phaser.Tilemaps.TilemapLayer | null
   objectsDeath:
@@ -61,18 +65,20 @@ class GameScene extends Phaser.Scene implements IScene {
     this.createLayers(map, tileset)
     this.setupDeathObjects(map)
 
-    for (let i = 0; i < 5; i++) {
+    this.enemies = [
       new Character(this, randomInt(400, 1040), randomInt(0, 100), 'warrior')
-    }
+    ]
 
     this.controllerManager = new ControllerManager(
       this,
       new Character(this, randomInt(400, 1040), randomInt(0, 100), 'mage')
     )
+    this.player = this.controllerManager.character
 
     if (!this.camera) {
       throw new Error('Invalid camera')
     }
+
     this.camera.startFollow(this.controllerManager.character, false, 0.05, 0.05)
     this.camera.setBounds(
       0,
@@ -92,6 +98,9 @@ class GameScene extends Phaser.Scene implements IScene {
         }
       }
     )
+
+    //
+    new HUD(this, this.player, this.enemies)
   }
 
   private createLayers(
