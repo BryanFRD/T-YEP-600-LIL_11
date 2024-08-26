@@ -34,6 +34,7 @@ const LoginComponent: React.FC = () => {
       service
         .login(body)
         .then((res) => {
+          console.log(res)
           if (res) {
             navigate('/', { replace: true });
           } else {

@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 import api from '../../api/axios.config'
-import { AxiosResponse } from 'axios';
 import AuthService from '../auth.service'
 import { AuthLogin, AuthRegister } from '../../types/auth.type'
 import logger from '../../logger/logger'
@@ -12,25 +11,13 @@ class AuthImplementation implements AuthService {
     try {
       const response = await api.post('/auth/login', user)
       if (response.status === axios.HttpStatusCode.Ok) {
-        localStorage.setItem('access_token', response.data.access_token)
+        localStorage.setItem('access_token', response.data.content.access_token)
         return true
       }
       return false
     } catch (error) {
       return false
     }
-  }
-
-  async getMe(): Promise<User | null> {
-    try {
-      const response = await api.get('/auth/me');
-      return response.data;
-    }
-    catch (error) {
-      logger.error(error);
-    }
-
-    return null;
   }
 
   logout(): Promise<boolean> {
@@ -49,7 +36,7 @@ class AuthImplementation implements AuthService {
       logger.info('Refresh token response:', response)
       
       if (response.status === axios.HttpStatusCode.Ok) {
-        localStorage.setItem('access_token', response.data.access_token)
+        localStorage.setItem('access_token', response.data.content.access_token)
         return true
       }
       
@@ -69,6 +56,8 @@ class AuthImplementation implements AuthService {
     
     const payload = token.split('.')[1]
     const data = JSON.parse(atob(payload))
+
+    console.log(data)
     
     return data.user
   }

@@ -5,7 +5,7 @@ import { User } from '../../types/user.type'
 import UserService from '../user.service'
 
 class UserImplementation implements UserService {
-  getUsers(): Promise<User[]> {
+  async getUsers(): Promise<User[]> {
     return api.get('/players')
       .then(response => {
         if(response.status === HttpStatusCode.Ok) {
@@ -15,7 +15,7 @@ class UserImplementation implements UserService {
       });
   }
 
-  getUserById(id: number): Promise<User> {
+  async getUserById(id: number): Promise<User> {
     return api.get(`/players/${id}`)
       .then(response => {
         if(response.status === HttpStatusCode.Ok) {

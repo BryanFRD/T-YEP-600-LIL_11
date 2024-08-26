@@ -5,7 +5,7 @@ interface AuthService {
   login(user: AuthLogin): Promise<boolean>
   logout(): Promise<boolean>
   register(user: AuthRegister): Promise<boolean>
-  getMe(): Promise<User | null>
+  me(): User | null
 }
 
 export default AuthService
