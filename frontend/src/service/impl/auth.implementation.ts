@@ -56,8 +56,6 @@ class AuthImplementation implements AuthService {
     
     const payload = token.split('.')[1]
     const data = JSON.parse(atob(payload))
-
-    console.log(data)
     
     return data.user
   }
