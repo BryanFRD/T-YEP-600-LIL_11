@@ -48,6 +48,8 @@ class Character extends Phaser.Physics.Arcade.Sprite {
   weapon: Weapon | null
   comboManager: AttackManager
 
+  dead = false
+
   text: Phaser.GameObjects.Text
   healthBar: Phaser.GameObjects.Graphics
 
@@ -76,7 +78,6 @@ class Character extends Phaser.Physics.Arcade.Sprite {
       throw new Error('Invalid character name')
     }
 
-    this.setCollideWorldBounds(true)
     this.setBounce(0)
     this.setGravityY(2000)
     this.setGravityX(0)
@@ -114,14 +115,6 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     // Check if the character has a valid body
     if (!this.body) {
       throw new Error('Invalid character name')
-    }
-
-    // Check if the character is in the air
-    if (
-      this.body.bottom >= this.scene.physics.world.bounds.height &&
-      this.inAir
-    ) {
-      this.inAir = false
     }
 
     if (!this.inAir) {
@@ -209,6 +202,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     if (this.weapon) {
       this.weapon.deleteWeapon()
     }
+    this.dead = true
   }
 }
 
