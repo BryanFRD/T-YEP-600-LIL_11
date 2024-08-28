@@ -1,3 +1,5 @@
+import { width } from '@fortawesome/free-solid-svg-icons/fa0'
+
 import Scene from './scenes/scene'
 
 const config = {
@@ -57,7 +59,9 @@ const config = {
       ],
       tilesetsGid: [0, 78],
       tilemapPath: `assets/maps/mapTest/mapTest.json`,
-      zoom: 3
+      zoom: 3,
+      width: 16 * 50 * 3,
+      height: 16 * 30 * 3
     }
   }
 }

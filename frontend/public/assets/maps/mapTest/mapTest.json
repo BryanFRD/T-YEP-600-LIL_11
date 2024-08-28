@@ -8,26 +8,48 @@
          "name":"DEATH",
          "objects":[
                 {
-                 "height":87.138185140273,
+                 "height":548.246708661465,
                  "id":10,
-                 "name":"eau gauche",
+                 "name":"out-left",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":255.530707642663,
+                 "width":38.1731544676903,
                  "x":2.82618688154898,
-                 "y":552.86178595094
+                 "y":4.81024115975856
                 }, 
                 {
-                 "height":87.5418650342812,
-                 "id":11,
-                 "name":"eau droite",
+                 "height":87.1382,
+                 "id":16,
+                 "name":"out-bottom",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":254.672092020392,
-                 "x":543.303712061503,
-                 "y":551.434903712119
+                 "width":795.445468995011,
+                 "x":2.6490319049837,
+                 "y":552.611617279925
+                }, 
+                {
+                 "height":548.247,
+                 "id":17,
+                 "name":"out-right",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":38.1732,
+                 "x":760.008875207108,
+                 "y":3.6093684302927
+                }, 
+                {
+                 "height":38.6247619387028,
+                 "id":18,
+                 "name":"out-top",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":790.133285531005,
+                 "x":7.64183905915895,
+                 "y":3.85226621525304
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -240,7 +262,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":16,
+ "nextobjectid":19,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

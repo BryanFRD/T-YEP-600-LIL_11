@@ -9,7 +9,6 @@ import { InputKey } from '../input/InputEnum'
 import InputManager from '../manager/InputManager'
 import Weapon from '../weapons/weapon'
 import DetailsScene from './detailsScene'
-import HUD from './gameHud'
 import { IScene } from './scene'
 
 class GameScene extends Phaser.Scene implements IScene, InputManager {
@@ -93,14 +92,46 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
     this.setupDeathObjects(map)
 
     this.enemies = [
-      new Character(this, randomInt(400, 1040), randomInt(0, 100), 'warrior'),
-      new Character(this, randomInt(400, 1040), randomInt(0, 100), 'warrior'),
-      new Character(this, randomInt(400, 1040), randomInt(0, 100), 'warrior')
+      new Character(
+        this,
+        randomInt(
+          this.mapConfig.width / 2 - 600,
+          this.mapConfig.width / 2 + 600
+        ),
+        randomInt(600, 300),
+        'mage'
+      ),
+      new Character(
+        this,
+        randomInt(
+          this.mapConfig.width / 2 - 600,
+          this.mapConfig.width / 2 + 600
+        ),
+        randomInt(600, 300),
+        'mage'
+      ),
+      new Character(
+        this,
+        randomInt(
+          this.mapConfig.width / 2 - 600,
+          this.mapConfig.width / 2 + 600
+        ),
+        randomInt(600, 300),
+        'warrior'
+      )
     ]
 
     this.controllerManager = new ControllerManager(
       this,
-      new Character(this, randomInt(400, 1040), randomInt(0, 100), 'mage')
+      new Character(
+        this,
+        randomInt(
+          this.mapConfig.width / 2 - 600,
+          this.mapConfig.width / 2 + 600
+        ),
+        600,
+        'warrior'
+      )
     )
     this.player = this.controllerManager.character
 
