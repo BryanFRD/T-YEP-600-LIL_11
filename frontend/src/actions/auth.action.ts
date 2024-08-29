@@ -57,8 +57,8 @@ export const performLogin = (auth: AuthLogin) => {
     logger.info('Login response:', response);
     
     if (response) {
-      const userImplementation = new UserImplementation();
-      const user = await userImplementation.getCurrentUser();
+      const authImplementation = new AuthImplementation();
+      const user = authImplementation.me();
       
       if (user) {
         dispatch(loginSuccess(user));

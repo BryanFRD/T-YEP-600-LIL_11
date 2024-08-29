@@ -8,8 +8,8 @@ const NotFound = () => {
   useEffect(() => {
     const authImplementation = new AuthImplementation()
     
-    const fetchUser = async () => {
-      const user = await authImplementation.getMe()
+    const fetchUser = () => {
+      const user = authImplementation.me()
       setUser(user)
     }
     
@@ -25,11 +25,6 @@ const NotFound = () => {
         On dirait que vous avez rencontré une erreur sauvage... mais elle s'est
         enfuie !
       </p>
-      <img
-        src="https://freefrontend.com/assets/img/html-funny-404-pages/CodePen-404-Page.gif"
-        alt="Scène de combat 2D"
-        className="w-1/2 mt-6"
-      />
       <p className="mt-4">Retournons à la sécurité !</p>
       {user ? (
         <a
