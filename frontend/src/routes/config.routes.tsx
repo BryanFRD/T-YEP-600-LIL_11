@@ -15,7 +15,7 @@ const routes: RouteType[] = [
   {
     path: '/',
     component: Home,
-    requiresAuth: true
+    requiresAuth: false
   },
   {
     path: '/login',
