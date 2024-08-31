@@ -1,14 +1,13 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-
-import logger from './logger/logger';
-import getEnvValue from './utils/environment';
-
 import swaggerUi from 'swagger-ui-express';
-import swaggerOutput from "./docs/swagger_output.json";
-import bodyParser from 'body-parser';
+
+import swaggerOutput from './docs/swagger_output.json';
+import logger from './logger/logger';
 import { routes } from './routes';
+import getEnvValue from './utils/environment';
 
 const PORT_STRING: string | undefined = getEnvValue('API_PORT');
 

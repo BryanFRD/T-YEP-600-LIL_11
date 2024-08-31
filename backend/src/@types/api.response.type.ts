@@ -3,7 +3,7 @@ import HttpCode from '../utils/http.code';
 interface ApiResponse<T> {
   status: 'success' | 'error';
   code: HttpCode;
-  data?: T;
+  content?: T;
   message?: string;
   error?: ErrorDetail;
 }
@@ -16,7 +16,7 @@ interface ErrorDetail {
 interface PaginatedResponse<T> {
   status: 'success' | 'error';
   code: HttpCode;
-  data: T[];
+  content: T[];
   page: number;
   limit: number;
   total: number;
@@ -25,7 +25,7 @@ interface PaginatedResponse<T> {
 interface SuccessResponse<T> extends ApiResponse<T> {
   status: 'success';
   code: HttpCode.OK | HttpCode.CREATED | HttpCode.NO_CONTENT;
-  data: T;
+  content: T;
 }
 
 interface ErrorResponse extends ApiResponse<null> {

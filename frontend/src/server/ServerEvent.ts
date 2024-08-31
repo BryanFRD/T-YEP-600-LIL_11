@@ -1,0 +1,27 @@
+enum ServerEvent {
+  ROOMS = 'rooms',
+  JOIN_ROOM = 'join-room',
+  LEAVE_ROOM = 'leave-room',
+  CREATE_ROOM = 'create-room',
+  DELETE_ROOM = 'delete-room',
+  PING = 'ping',
+  PONG = 'pong',
+  PLAYER_MOVE = 'player-move',
+  PLAYER_MOVED = 'player-moved',
+  PLAYER_ATTACK = 'player-attack',
+  PLAYER_ATTACKED = 'player-attacked',
+  PLAYER_JOIN = 'player-join',
+  PLAYER_JOINED = 'player-joined',
+  PLAYER_LEAVE = 'player-leave',
+  PLAYER_LEFT = 'player-left',
+  PLAYER_DIED = 'player-died',
+  PLAYER_RESPAWN = 'player-respawn',
+  PLAYER_HIT = 'player-hit',
+  PLAYER_HEALED = 'player-healed',
+  PLAYER_UPDATE = 'player-update',
+  PLAYER_UPDATED = 'player-updated',
+  PLAYER_REFRESH = 'player-refresh',
+  PLAYER_REFRESHED = 'player-refreshed',
+}
+
+export default ServerEvent

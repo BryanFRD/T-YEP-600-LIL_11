@@ -1,3 +1,5 @@
+import { width } from '@fortawesome/free-solid-svg-icons/fa0'
+
 import Scene from './scenes/scene'
 
 const config = {
@@ -25,6 +27,7 @@ const config = {
     },
     powerPreference: 'high-performance',
     scene: Scene(),
+    pixelArt: true,
     physics: {
       default: 'arcade',
       arcade: {
@@ -34,6 +37,31 @@ const config = {
         },
         debug: true
       }
+    }
+  },
+  map: {
+    example: {
+      name: 'example',
+      tilesetsPath: [
+        `assets/maps/mapTest/tileset-extruded.png`,
+        `assets/maps/mapTest/tileset-cloud-extruded.png`
+      ],
+      tilesetsSizes: [
+        { frameWidth: 16, frameHeight: 16 },
+        { frameWidth: 16, frameHeight: 16 }
+      ],
+      tilesetsMargin: [1, 1],
+      tilesetsSpacing: [2, 2],
+      tilesetsNames: ['tileset', 'tileset-cloud'],
+      tilesetsOffset: [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 }
+      ],
+      tilesetsGid: [0, 78],
+      tilemapPath: `assets/maps/mapTest/mapTest.json`,
+      zoom: 3,
+      width: 16 * 50 * 3,
+      height: 16 * 30 * 3
     }
   }
 }

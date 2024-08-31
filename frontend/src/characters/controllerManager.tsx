@@ -1,25 +1,22 @@
 import Character from './character'
-
-export enum MovementKeys {
-  UP = 'up',
-  DOWN = 'down',
-  LEFT = 'left',
-  RIGHT = 'right'
-}
+import logger from '../logger/logger'
+import { HOLDABLE_KEYS, InputKey } from '../input/InputEnum'
+import InputManager, { implementsInputManager } from '../manager/InputManager'
 
 class ControllerManager {
   character: Character
   scene: Phaser.Scene
-  keySetting: { [key: string]: Phaser.Input.Keyboard.Key }
-  keyStatus: { [key: string]: boolean }
-  private movementKeys: string[] = ['up', 'down', 'left', 'right']
+  keySetting: { [key in InputKey]: Phaser.Input.Keyboard.Key }
+  keyStatus: { [key in InputKey]: boolean }
 
   constructor(scene: Phaser.Scene, character: Character) {
     this.character = character
     this.scene = scene
+    
     if (this.scene.input.keyboard == null) {
       throw new Error('No keyboard found')
     }
+    
     this.keySetting = {
       up: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
       down: this.scene.input.keyboard.addKey(
@@ -36,22 +33,27 @@ class ControllerManager {
       grabThrow: this.scene.input.keyboard.addKey(
         Phaser.Input.Keyboard.KeyCodes.E
       ),
+      shield: this.scene.input.keyboard.addKey(
+        Phaser.Input.Keyboard.KeyCodes.Q
+      ),
       special: this.scene.input.keyboard.addKey(
         Phaser.Input.Keyboard.KeyCodes.R
       ),
-      dash: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
+      dash: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+      informations: this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P)
     }
     this.keyStatus = {
       up: false,
       down: false,
       left: false,
       right: false,
-      lightAttack: false,
-      heavyAttack: false,
+      light: false,
+      heavy: false,
       grabThrow: false,
       special: false,
       shield: false,
-      dash: false
+      dash: false,
+      informations: false
     }
     this.handleInput()
   }
@@ -60,9 +62,12 @@ class ControllerManager {
     Object.entries(this.keyStatus).forEach(([key, status]) => {
       if (status) {
         this.character.controlerInput(key)
-        // Reset all action keys except for movement keys
-        if (!this.movementKeys.includes(key)) {
-          this.keyStatus[key] = false
+        if (!HOLDABLE_KEYS.includes(key as InputKey)) {
+          this.keyStatus[key as InputKey] = false
+        }
+        
+        if (implementsInputManager(this.scene)) {
+          (this.scene as InputManager).handleInput(key as InputKey, status)
         }
       }
     })
@@ -71,10 +76,10 @@ class ControllerManager {
   handleInput() {
     Object.entries(this.keySetting).forEach(([key, inputKey]) => {
       inputKey.on('down', () => {
-        this.keyStatus[key] = true
+        this.keyStatus[key as InputKey] = true
       })
       inputKey.on('up', () => {
-        this.keyStatus[key] = false
+        this.keyStatus[key as InputKey] = false
       })
     })
   }
@@ -89,9 +94,9 @@ class ControllerManager {
         value as keyof typeof Phaser.Input.Keyboard.KeyCodes
       ]
     if (keyCode !== undefined) {
-      this.keySetting[key].keyCode = keyCode
+      this.keySetting[key as InputKey].keyCode = keyCode
     } else {
-      console.warn(`Invalid key code: ${value}`)
+      logger.warn(`Invalid key code: ${value}`)
     }
   }
 }

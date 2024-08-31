@@ -9,9 +9,6 @@
     "outDir": "./dist", // Redirige la sortie des fichiers .js1
     "resolveJsonModule": true
   },
-  "include": [
-    "src/docs/swagger-output.json",
-    "src/**/*", "src"
-  ], // Spécifie un tableau de noms de fichiers à inclure dans le programme
+  "include": ["src/docs/swagger-output.json", "src/**/*", "src"], // Spécifie un tableau de noms de fichiers à inclure dans le programme
   "exclude": ["node_modules", "**/*.spec.ts"] // Exclut les fichiers ou dossiers spécifiés
 }
