@@ -4,6 +4,7 @@ import {
   getPlayerDTO,
   Player,
 } from '../../@types/player.type';
+import UserNotFoundById from '../../error/UserNotFoundById';
 import { toPlayerDTO } from '../../mapper/player.mapper';
 import { db } from '../../utils/db.server';
 import PlayerService from '../player.service';

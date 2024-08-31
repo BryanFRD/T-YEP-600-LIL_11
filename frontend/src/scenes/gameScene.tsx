@@ -10,6 +10,11 @@ import InputManager from '../manager/InputManager'
 import Weapon from '../weapons/weapon'
 import DetailsScene from './detailsScene'
 import { IScene } from './scene'
+import AuthImplementation from '../service/impl/auth.implementation'
+import { User } from '../types/user.type'
+import Server from '../server/Server'
+import ServerEvent from '../server/ServerEvent'
+import logger from '../logger/logger'
 
 class GameScene extends Phaser.Scene implements IScene, InputManager {
   controllerManager: ControllerManager | undefined
@@ -32,6 +37,8 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
     | null
 
   Hud: Phaser.Scenes.ScenePlugin | null = null
+  
+  authImplementation: AuthImplementation = new AuthImplementation();
 
   constructor(mapName: string = 'example') {
     super('game')
@@ -41,6 +48,8 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
     this.layerPlatform = null
     this.objectsDeath = null
     this.objectsBackground = null
+    
+    this.detailsScene = new DetailsScene(this)
   }
 
   preload() {
@@ -58,6 +67,8 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
   }
 
   create() {
+    this.detailsScene?.create()
+    
     const map = this.make.tilemap({
       key: `tilemap_${this.mapName}`,
       tileWidth: 16,
@@ -67,7 +78,7 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
       console.error('Tilemap not found')
       return
     }
-
+    
     const tilesets = []
     for (let i = 0; i < this.mapConfig.tilesetsPath.length; i++) {
       const tileset = map.addTilesetImage(
@@ -90,9 +101,10 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
       return
     }
     this.setupDeathObjects(map)
-
+    
     this.enemies = [
       new Character(
+        null,
         this,
         randomInt(
           this.mapConfig.width / 2 - 600,
@@ -102,6 +114,7 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
         'mage'
       ),
       new Character(
+        null,
         this,
         randomInt(
           this.mapConfig.width / 2 - 600,
@@ -111,6 +124,7 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
         'mage'
       ),
       new Character(
+        null,
         this,
         randomInt(
           this.mapConfig.width / 2 - 600,
@@ -124,6 +138,7 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
     this.controllerManager = new ControllerManager(
       this,
       new Character(
+        this.authImplementation.me(),
         this,
         randomInt(
           this.mapConfig.width / 2 - 600,
@@ -152,7 +167,7 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
       this.children.getAll().filter(child => child instanceof Character),
       this.objectsDeath as Phaser.GameObjects.Sprite[],
       character => {
-        ;(character as Character).deleteCharacter()
+        (character as Character).deleteCharacter()
         if (character === this.controllerManager?.character) {
           this.controllerManager = undefined
         }
@@ -163,6 +178,76 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
       player: this.player,
       enemies: this.enemies
     })
+    
+    const server = Server.getInstance();
+    
+    if(this.player.user){
+      server.emit(ServerEvent.PLAYER_JOIN, { playerId: this.player.user.id, firstname:this.player.user.firstname, name: this.player.user.name, playerX: this.player.x, playerY: this.player.y });
+    }
+    
+    server.addEventHandler(ServerEvent.PLAYER_REFRESHED, (data => {
+      logger.info(`[${data.playerId}: ${data.firstname} ${data.name}] refreshed the room`)
+      
+      if(this.player?.user?.id === data.playerId || this.enemies?.find(enemy => enemy.user?.id === data.playerId)){
+        return;
+      }
+      
+      this.enemies?.push(new Character(
+        {
+          id: data.playerId,
+          firstname: data.firstname,
+          name: data.name,
+          email: '',
+        },
+        this,
+        data.playerX,
+        data.playerY,
+        'warrior'
+      ))
+    }));
+    
+    server.addEventHandler(ServerEvent.PLAYER_JOINED, (data => {
+      logger.info(`[${data.playerId}: ${data.firstname} ${data.name}] joined the room`)
+      
+      if(this.player && this.player.user){
+        server.emit(ServerEvent.PLAYER_REFRESH, { playerId: this.player.user.id, firstname: this.player.user.firstname, name: this.player.user.name, playerX: this.player.x, playerY: this.player.y });
+      }
+      
+      if(this.player?.user?.id === data.playerId || this.enemies?.find(enemy => enemy.user?.id === data.playerId)){
+        return;
+      }
+      
+      this.enemies?.push(new Character(
+        {
+          id: data.playerId,
+          firstname: data.firstname,
+          name: data.name,
+          email: '',
+        },
+        this,
+        data.playerX,
+        data.playerY,
+        'warrior'
+      ))
+    }));
+    
+    server.addEventHandler(ServerEvent.PLAYER_LEFT, (data => {
+      logger.info(`User ${data.playerId} left the room`)
+      this.enemies?.forEach((enemy, index) => {
+        if (enemy.user?.id === data.playerId) {
+          enemy.deleteCharacter()
+          this.enemies?.splice(index, 1)
+        }
+      })
+    }));
+    
+    server.addEventHandler(ServerEvent.PLAYER_MOVED, (data => {
+      this.enemies?.forEach(enemy => {
+        if (enemy.user?.id === data.playerId) {
+          enemy.setPosition(data.newPosition.x, data.newPosition.y)
+        }
+      })
+    }));
   }
 
   private createLayers(
@@ -242,11 +327,24 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
         child.update(time, delta)
       }
     })
+    
+    this.enemies?.forEach(enemy => {
+      if (enemy.update) {
+        enemy.update(time, delta)
+      }
+    });
     this.controllerManager?.update(time, delta)
     this.detailsScene?.update(time, delta)
   }
 
   handleInput(key: InputKey, status: boolean): void {
+    if(this.player && this.player.user){
+      Server.getInstance().emit(ServerEvent.PLAYER_MOVE, {
+        playerId: this.player.user.id,
+        newPosition: { x: this.player.x, y: this.player.y }
+      });
+    }
+    
     if (key === InputKey.INFORMATIONS && status) {
       this.detailsScene?.switchVisible()
     }

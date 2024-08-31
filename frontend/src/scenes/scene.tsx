@@ -1,4 +1,5 @@
 import ContinueGameScene from './continueGameScene'
+import DetailsScene from './detailsScene'
 import GameHud from './gameHud'
 import GameScene from './gameScene'
 import MenuScene from './menuScene'
@@ -18,7 +19,8 @@ const Scene = () => {
     SaveGameScene,
     NewGameScene,
     OptionsScene,
-    ContinueGameScene
+    ContinueGameScene,
+    DetailsScene
   ]
   return scene
 }
