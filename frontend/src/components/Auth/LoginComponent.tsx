@@ -3,18 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
 
 import AuthImplementation from '../../service/impl/auth.implementation';
-import { performLogin } from '../../actions/auth.action';
 import logger from '../../logger/logger';
 import { AuthLogin } from '../../types/auth.type';
-import { UnknownAction } from '@reduxjs/toolkit';
 
 const LoginComponent: React.FC = () => {
   const service = new AuthImplementation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     emailOrUsername: '',
@@ -41,7 +37,6 @@ const LoginComponent: React.FC = () => {
         .login(body)
         .then((res) => {
           if (res) {
-            dispatch(performLogin(body) as unknown as UnknownAction);
             navigate('/', { replace: true });
           }
         })

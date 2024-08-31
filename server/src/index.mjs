@@ -28,6 +28,31 @@ io.onConnection(channel => {
   channel.on('ping', data => {
     channel.emit('pong', data);
   });
+  
+  channel.on('player-join', data => {
+    console.log('player-join:', data);
+    channel.broadcast.emit('player-joined', data);
+  })
+  
+  channel.on('player-move', data => {
+    console.log('player-move:', data);
+    channel.broadcast.emit('player-moved', data);
+  });
+  
+  channel.on('player-leave', data => {
+    console.log('player-leave:', data);
+    channel.broadcast.emit('player-left', data);
+  });
+  
+  channel.on('player-attack', data => {
+    console.log('player-attack:', data);
+    channel.broadcast.emit('player-attacked', data);
+  });
+  
+  channel.on('player-refresh', data => {
+    console.log('player-refresh:', data);
+    channel.broadcast.emit('player-refreshed', data);
+  });
 });
 
 server.listen(PORT, () => {
