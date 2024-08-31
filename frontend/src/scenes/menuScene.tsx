@@ -26,7 +26,7 @@ class MenuScene extends Phaser.Scene implements IScene {
       .image(600, 400, 'optionsButton')
       .setInteractive()
       .on('pointerdown', () => {
-        this.scene.start('OptionsScene')
+        this.scene.start('OptionsScene', { previousScene: 'menu' }) // Passer la scène précédente ici
       })
   }
   quitGame() {
