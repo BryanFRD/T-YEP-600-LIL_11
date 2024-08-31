@@ -1,43 +1,43 @@
-import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
+import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import AuthImplementation from '../../service/impl/auth.implementation'
-import logger from '../../logger/logger'
+import AuthImplementation from '../../service/impl/auth.implementation';
+import logger from '../../logger/logger';
+import { AuthLogin } from '../../types/auth.type';
 
 const LoginComponent: React.FC = () => {
-  const service = new AuthImplementation()
-  const navigate = useNavigate()
+  const service = new AuthImplementation();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     emailOrUsername: '',
     password: ''
-  })
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData(prevState => ({
       ...prevState,
       [name]: value
-    }))
-  }
+    }));
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const body = {
+    e.preventDefault();
+    const body: AuthLogin = {
       identifier: formData.emailOrUsername,
       password: formData.password
-    }
+    };
+
     toast.promise(
       service
         .login(body)
         .then((res) => {
           if (res) {
             navigate('/', { replace: true });
-          } else {
-            throw new Error('Identifiant ou mot de passe incorrect');
           }
         })
         .catch(err => {
@@ -49,8 +49,8 @@ const LoginComponent: React.FC = () => {
         success: 'Connexion réussie 👌',
         error: 'Identifiant ou mot de passe incorrect 🤯'
       }
-    )
-  }
+    );
+  };
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -109,7 +109,7 @@ const LoginComponent: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginComponent
+export default LoginComponent;

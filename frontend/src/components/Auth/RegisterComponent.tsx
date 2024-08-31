@@ -6,15 +6,22 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import AuthImplementation from '../../service/impl/auth.implementation';
+import logger from '../../logger/logger';
 
 const RegisterComponent: React.FC = () => {
+  const service = new AuthImplementation();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    firstname: '',
+    name: '',
     email: '',
     username: '',
     password: ''
-  })
+  });
+  
+  const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -26,6 +33,25 @@ const RegisterComponent: React.FC = () => {
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault()
+    
+    toast.promise(
+      service
+        .register(formData)
+        .then((res) => {
+          if (res) {
+            navigate('/login', { replace: true });
+          }
+        })
+        .catch(err => {
+          logger.error(err);
+          throw err;
+        }),
+      {
+        pending: 'Inscription en cours...',
+        success: 'Inscription réussie 👌',
+        error: 'Erreur lors de l\'inscription 🤯'
+      }
+    )
   }
 
   return (
@@ -41,9 +67,9 @@ const RegisterComponent: React.FC = () => {
             />
             <input
               type="text"
-              name="firstName"
+              name="firstname"
               placeholder="Prénom"
-              value={formData.firstName}
+              value={formData.firstname}
               onChange={handleInputChange}
               className="w-full px-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400"
             />
@@ -55,9 +81,9 @@ const RegisterComponent: React.FC = () => {
             />
             <input
               type="text"
-              name="lastName"
+              name="name"
               placeholder="Nom"
-              value={formData.lastName}
+              value={formData.name}
               onChange={handleInputChange}
               className="w-full px-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400"
             />

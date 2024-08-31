@@ -7,20 +7,20 @@ import {
 import HttpCode from './http.code';
 
 export const createSuccessResponse = <T>(
-  data: T,
+  content: T,
   code: HttpCode.OK | HttpCode.CREATED | HttpCode.NO_CONTENT,
   message?: string,
 ): SuccessResponse<T> => {
   return {
     status: 'success',
     code,
-    data,
+    content,
     message,
   };
 };
 
 export const createPaginatedResponse = <T>(
-  data: T[],
+  content: T[],
   page: number,
   limit: number,
   total: number,
@@ -28,7 +28,7 @@ export const createPaginatedResponse = <T>(
   return {
     status: 'success',
     code: HttpCode.OK,
-    data,
+    content,
     page,
     limit,
     total,

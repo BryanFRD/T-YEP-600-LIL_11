@@ -3,6 +3,7 @@ import getEnvValue from '../utils/environment';
 import logger from '../logger/logger';
 import ServerEvent from './ServerEvent';
 import ServerEventPayloads from './ServerEventPayload';
+import { User } from '../types/user.type';
 
 export default class Server {
   
@@ -48,6 +49,14 @@ export default class Server {
     this.handlePing();
   }
   
+  setUserData(data: User){
+    if(this.channel){
+      this.channel.userData = data;
+    } else {
+      logger.error('Channel is not defined!');
+    }
+  }
+  
   addEventHandler<T extends ServerEvent>(
     event: T,
     handler: (payload: ServerEventPayloads[T]) => void
@@ -78,7 +87,7 @@ export default class Server {
     if(this.channel){
       this.channel.emit(event, data);
     } else {
-      logger.error('Channel is not defined!');
+      logger.error('Channel is not defined! Cannot emit event:', event);
     }
   }
   

@@ -6,6 +6,7 @@ import Weapon from '../weapons/weapon'
 import AttackManager from './attackManager'
 import Mage from './mage'
 import Warrior from './warrior'
+import { User } from '../types/user.type'
 
 export type CharacterType = {
   warrior: Warrior
@@ -44,9 +45,12 @@ export interface ICharacter {
 }
 
 class Character extends Phaser.Physics.Arcade.Sprite {
+  user: User | null
   character: CharacterObject
   weapon: Weapon | null
   comboManager: AttackManager
+
+  dead = false
 
   text: Phaser.GameObjects.Text
   healthBar: Phaser.GameObjects.Graphics
@@ -60,15 +64,17 @@ class Character extends Phaser.Physics.Arcade.Sprite {
 
   inAir: boolean = true
   inWall: boolean = false
-
+  
   constructor(
+    user: User | null,
     scene: Phaser.Scene,
     x: number,
     y: number,
-    characterName: CharacterName
+    characterName: CharacterName,
   ) {
     super(scene, x, y, characterName)
-
+    
+    this.user = user
     scene.physics.world.enableBody(this)
     scene.physics.world.enableBody(this)
 
@@ -76,7 +82,6 @@ class Character extends Phaser.Physics.Arcade.Sprite {
       throw new Error('Invalid character name')
     }
 
-    this.setCollideWorldBounds(true)
     this.setBounce(0)
     this.setGravityY(2000)
     this.setGravityX(0)
@@ -86,7 +91,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     this.character = this.getCharacter(characterName)
     this.comboManager = new AttackManager(this)
 
-    this.text = this.scene.add.text(0, 0, characterName, { color: '#0f0' })
+    this.text = this.scene.add.text(0, 0, user?.firstname || characterName, { color: user ? '#f55' : '#0f0' })
     this.text.setOrigin(0.5) // set the origin of the text object to the center
     this.text.setPosition(this.body.center.x, this.body.center.y) // set the position of the text object to the center of the sprite
 
@@ -114,14 +119,6 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     // Check if the character has a valid body
     if (!this.body) {
       throw new Error('Invalid character name')
-    }
-
-    // Check if the character is in the air
-    if (
-      this.body.bottom >= this.scene.physics.world.bounds.height &&
-      this.inAir
-    ) {
-      this.inAir = false
     }
 
     if (!this.inAir) {
@@ -209,7 +206,14 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     if (this.weapon) {
       this.weapon.deleteWeapon()
     }
+    this.dead = true
   }
+  
+  setPos(x: number, y: number) {
+    this.x = x
+    this.y = y
+  }
+  
 }
 
 export default Character

@@ -1,4 +1,4 @@
-import { toast, ToastContainer, Zoom } from 'react-toastify'
+import { ToastContainer, Zoom } from 'react-toastify'
 
 import Router from './routes/router'
 

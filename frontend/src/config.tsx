@@ -1,3 +1,5 @@
+import { width } from '@fortawesome/free-solid-svg-icons/fa0'
+
 import Scene from './scenes/scene'
 
 const config = {
@@ -40,13 +42,26 @@ const config = {
   map: {
     example: {
       name: 'example',
-      tilesetPath: `assets/maps/mapTest/tileTest-extruded.png`,
-      tilesetSizes: { frameWidth: 16, frameHeight: 16 },
-      tilesetMargin: 1,
-      tilesetSpacing: 2,
-      tilesetOffset: { x: 0, y: 0 },
+      tilesetsPath: [
+        `assets/maps/mapTest/tileset-extruded.png`,
+        `assets/maps/mapTest/tileset-cloud-extruded.png`
+      ],
+      tilesetsSizes: [
+        { frameWidth: 16, frameHeight: 16 },
+        { frameWidth: 16, frameHeight: 16 }
+      ],
+      tilesetsMargin: [1, 1],
+      tilesetsSpacing: [2, 2],
+      tilesetsNames: ['tileset', 'tileset-cloud'],
+      tilesetsOffset: [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 }
+      ],
+      tilesetsGid: [0, 78],
       tilemapPath: `assets/maps/mapTest/mapTest.json`,
-      zoom: 3
+      zoom: 3,
+      width: 16 * 50 * 3,
+      height: 16 * 30 * 3
     }
   }
 }
