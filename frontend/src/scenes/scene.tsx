@@ -4,6 +4,7 @@ import MenuScene from './menuScene'
 import NewGameScene from './newGameScene'
 import OptionsScene from './optionsScene'
 import SaveGameScene from './saveGameScene'
+import KeyboardConfigScene from './keyboardConfigScene'
 
 export interface IScene {
   scene: unknown
@@ -16,7 +17,8 @@ const Scene = () => {
     SaveGameScene,
     NewGameScene,
     OptionsScene,
-    ContinueGameScene
+    ContinueGameScene,
+    KeyboardConfigScene
   ]
   return scene
 }

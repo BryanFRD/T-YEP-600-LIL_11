@@ -14,8 +14,8 @@ export type RouteType = {
 const routes: RouteType[] = [
   {
     path: '/',
-    component: Home,
-    requiresAuth: true
+    component: Home
+    // requiresAuth: true
   },
   {
     path: '/login',
