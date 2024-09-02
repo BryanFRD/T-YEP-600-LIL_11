@@ -64,6 +64,41 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
       this.mapConfig.tilemapPath
     )
     this.camera = this.cameras.main
+
+    this.load.spritesheet(
+      'sprite_attack',
+      'assets/characters/mage/Attack1.png',
+      {
+        frameWidth: 250,
+        frameHeight: 250
+      }
+    )
+    this.load.spritesheet('sprite_death', 'assets/characters/mage/Death.png', {
+      frameWidth: 250,
+      frameHeight: 250,
+      startFrame: 0,
+      endFrame: 7
+    })
+    this.load.spritesheet('sprite_hit', 'assets/characters/mage/Take hit.png', {
+      frameWidth: 250,
+      frameHeight: 250
+    })
+    this.load.spritesheet('sprite_idle', 'assets/characters/mage/Idle.png', {
+      frameWidth: 250,
+      frameHeight: 250
+    })
+    this.load.spritesheet('sprite_jump', 'assets/characters/mage/Jump.png', {
+      frameWidth: 250,
+      frameHeight: 250
+    })
+    this.load.spritesheet('sprite_run', 'assets/characters/mage/Run.png', {
+      frameWidth: 250,
+      frameHeight: 250
+    })
+    this.load.spritesheet('sprite_fall', 'assets/characters/mage/Fall.png', {
+      frameWidth: 250,
+      frameHeight: 250
+    })
   }
 
   create() {
@@ -145,7 +180,7 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
           this.mapConfig.width / 2 + 600
         ),
         600,
-        'warrior'
+        'mage'
       )
     )
     this.player = this.controllerManager.character
@@ -178,7 +213,81 @@ class GameScene extends Phaser.Scene implements IScene, InputManager {
       player: this.player,
       enemies: this.enemies
     })
-    
+
+    this.createAnimations()
+  }
+
+  private createAnimations() {
+    this.anims.create({
+      key: 'attack',
+      frames: this.anims.generateFrameNumbers('sprite_attack', {
+        start: 0,
+        end: 7
+      }),
+      frameRate: 10,
+      repeat: 0
+    })
+    this.anims.create({
+      key: 'death',
+      frames: this.anims.generateFrameNumbers('sprite_death', {
+        start: 0,
+        end: 6
+      }),
+      frameRate: 10,
+      repeat: 0
+    })
+    this.anims.create({
+      key: 'hit',
+      frames: this.anims.generateFrameNumbers('sprite_hit', {
+        start: 0,
+        end: 2
+      }),
+      frameRate: 10,
+      repeat: 0
+    })
+    this.anims.create({
+      key: 'idle',
+      frames: this.anims.generateFrameNumbers('sprite_idle', {
+        start: 0,
+        end: 7
+      }),
+      frameRate: 10,
+      repeat: -1
+    })
+    this.anims.create({
+      key: 'jump',
+      frames: this.anims.generateFrameNumbers('sprite_jump', {
+        start: 0,
+        end: 1
+      }),
+      frameRate: 10,
+      repeat: 0
+    })
+    this.anims.create({
+      key: 'run',
+      frames: this.anims.generateFrameNumbers('sprite_run', {
+        start: 0,
+        end: 7
+      }),
+      frameRate: 10,
+      repeat: -1
+    })
+    this.anims.create({
+      key: 'fall',
+      frames: this.anims.generateFrameNumbers('sprite_fall', {
+        start: 0,
+        end: 1
+      }),
+      frameRate: 10,
+      repeat: -1
+    })
+
+    this.children.each(child => {
+      if (child instanceof Character) {
+        child.sprite?.play('idle', true)
+      }
+    })
+
     const server = Server.getInstance();
     
     if(this.player.user){
