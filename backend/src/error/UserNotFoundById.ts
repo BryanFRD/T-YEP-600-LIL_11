@@ -4,3 +4,5 @@ class UserNotFoundById extends Error {
     this.name = 'UserNotFoundByIdentifier';
   }
 }
+
+export default UserNotFoundById;

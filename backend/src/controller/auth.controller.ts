@@ -22,6 +22,7 @@ import {
 } from '../utils/api.response';
 import HttpCode from '../utils/http.code';
 import { handleJoiValidationError } from '../utils/joi';
+import UserNotFoundById from '../error/UserNotFoundById';
 
 class AuthController {
   private authService: AuthImplementation;

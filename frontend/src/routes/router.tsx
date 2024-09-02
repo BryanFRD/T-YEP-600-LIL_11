@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
 import AuthImplementation from '../service/impl/auth.implementation'
-import UserImplementation from '../service/impl/user.implementation'
 import { User } from '../types/user.type'
 import routes, { RouteType } from './config.routes'
+import Server from '../server/Server'
 
 const Router = () => {
   const [currentRoute, setCurrentRoute] = useState<RouteType | null>(null)
   const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -21,15 +22,22 @@ const Router = () => {
     const fetchUser = async () => {
       const user = await authImplementation.me()
 
-      if (user) setUser(user)
+      if (user){
+        Server.getInstance().setUserData(user);
+        setUser(user);
+      }
+      
+      setLoading(false)
     }
 
     fetchUser()
   }, [])
 
   useEffect(() => {
+    if(loading) return;
+    
     if (!user && currentRoute?.requiresAuth) navigate('/login')
-  }, [user, navigate, currentRoute])
+  }, [user, navigate, currentRoute, loading])
 
   return (
     <Routes>
