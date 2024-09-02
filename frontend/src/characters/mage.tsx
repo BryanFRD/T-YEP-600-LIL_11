@@ -17,7 +17,8 @@ class Mage implements ICharacter {
     this.character = character
 
     if (this.character && this.character.body) {
-      this.character.setTintFill(0x787878)
+      // transparent character
+      this.character.visible = false
       this.character.setDisplaySize(64, 96)
 
       if (this.character.body.velocity.x < 0) {
@@ -29,6 +30,7 @@ class Mage implements ICharacter {
       throw new Error('Invalid character name')
     }
   }
+
   wallDashAttack(target: Character): void {
     if (!this.character.body) {
       throw new Error('Invalid character name')
@@ -83,6 +85,9 @@ class Mage implements ICharacter {
     } else {
       this.character.setVelocityX(-this.speed)
     }
+
+    this.character.sprite?.play('run', true)
+    this.character.sprite?.setFlipX(true)
   }
   moveRight(): void {
     if (!this.character.body) {
@@ -94,6 +99,9 @@ class Mage implements ICharacter {
     } else {
       this.character.setVelocityX(this.speed)
     }
+
+    this.character.sprite?.play('run', true)
+    this.character.sprite?.setFlipX(false)
   }
   lightAttack(target: Character): void {
     if (this.character.weapon) {
@@ -101,6 +109,9 @@ class Mage implements ICharacter {
     } else {
       target.character.health -= this.attack
     }
+
+    this.character.sprite?.play('attack', true)
+    target.sprite?.play('hit', true)
   }
   heavyAttack(target: Character): void {
     if (!this.character.body) {
@@ -124,6 +135,9 @@ class Mage implements ICharacter {
     target.setVelocityX(Math.cos(angle) * 1000)
 
     target.inAir = true
+
+    this.character.sprite?.play('attack', false)
+    target.sprite?.play('hit', true)
   }
   airLightAttack(target: Character): void {
     target.character.health -= this.attack
@@ -151,6 +165,8 @@ class Mage implements ICharacter {
       this.character.setVelocityY(-this.speed * 3)
       this.character.inAir = true
     }
+
+    this.character.sprite?.play('jump', true)
   }
   dash(target?: Character): void {
     if (!this.character.body) {
@@ -213,6 +229,19 @@ class Mage implements ICharacter {
       !this.character.inAir
     ) {
       this.character.setAccelerationY(0)
+    }
+
+    if (this.character.sprite?.anims) {
+      if (
+        this.character.body.velocity.x < 5 &&
+        this.character.body.velocity.x > -5 &&
+        !this.character.inAir
+      ) {
+        this.character.sprite.play('idle', true)
+      }
+    }
+    if (this.character.body.velocity.y > 0 && this.character.inAir) {
+      this.character.sprite?.play('fall', true)
     }
   }
 }

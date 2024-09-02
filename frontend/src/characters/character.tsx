@@ -63,6 +63,8 @@ class Character extends Phaser.Physics.Arcade.Sprite {
   inAir: boolean = true
   inWall: boolean = false
 
+  sprite: Phaser.GameObjects.Sprite | null = null
+
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -109,6 +111,10 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     // Create a new weapon object for the character
     this.weapon = new Weapon(this.scene, this.x, this.y, 'sword', this)
     this.weapon.y = this.y - 1
+
+    this.sprite = this.scene.add.sprite(this.x, this.y, 'idle')
+    this.sprite.scale = 2
+    this.sprite.setOrigin(0.5, 0.57)
   }
 
   update(time: number, delta: number) {
@@ -126,6 +132,8 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     // Update the character's
     this.character.update(time, delta)
     this.comboManager.update(time, delta)
+
+    this.sprite?.setPosition(this.x, this.y)
 
     const decelerationFactor = this.inAir ? 0.98 : 0.01
 
